@@ -2,13 +2,13 @@
 using System.IO;
 using System.Net.Mime;
 using System.Threading.Tasks;
-using AzureStorageProvider.Abstractions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using MimeMapping;
+using StorageProvider.Abstractions;
 
-namespace AzureStorage.Controllers
+namespace StorageSample.Controllers
 {
     [Route("api/attachments")]
     [ApiController]

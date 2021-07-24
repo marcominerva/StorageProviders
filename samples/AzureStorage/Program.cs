@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
-namespace AzureStorage
+namespace StorageSample
 {
     public class Program
     {

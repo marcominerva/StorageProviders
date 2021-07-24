@@ -1,15 +1,17 @@
 ﻿using System;
-using AzureStorageProvider.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
+using StorageProvider.Abstractions;
 
-namespace AzureStorageProvider
+namespace StorageSampleProvider
 {
     public static class AzureStorageProviderExtensions
     {
         public static IServiceCollection AddAzureStorage(this IServiceCollection services, Action<AzureStorageSettings> configuration)
         {
-            services.Configure(configuration);
+            var azureStorageSettings = new AzureStorageSettings();
+            configuration?.Invoke(azureStorageSettings);
 
+            services.AddSingleton(azureStorageSettings);
             services.AddScoped<IStorageProvider, AzureStorageProvider>();
             return services;
         }

@@ -1,4 +1,4 @@
-﻿namespace AzureStorageProvider
+﻿namespace StorageSampleProvider
 {
     public class AzureStorageSettings
     {

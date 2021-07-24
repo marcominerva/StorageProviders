@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31129.286
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureStorage", "samples\AzureStorage\AzureStorage.csproj", "{301A5B9E-79CC-4973-9532-0B59C8B511BB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StorageSample", "samples\AzureStorage\StorageSample.csproj", "{301A5B9E-79CC-4973-9532-0B59C8B511BB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureStorageProvider", "src\AzureStorageProvider\AzureStorageProvider.csproj", "{D1865604-E7DD-41C5-83C1-7592CE63DABC}"
 EndProject
@@ -16,7 +16,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StorageProvider.Abstractions", "src\StorageProvider.Abstractions\StorageProvider.Abstractions.csproj", "{BB420BE5-C6D1-40DD-9DF4-8E5158AE1CC5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StorageProvider.Abstractions", "src\StorageProvider.Abstractions\StorageProvider.Abstractions.csproj", "{BB420BE5-C6D1-40DD-9DF4-8E5158AE1CC5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -5,20 +5,19 @@ using System.Linq;
 using System.Threading.Tasks;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
-using AzureStorageProvider.Abstractions;
-using Microsoft.Extensions.Options;
 using MimeMapping;
+using StorageProvider.Abstractions;
 
-namespace AzureStorageProvider
+namespace StorageSampleProvider
 {
     internal class AzureStorageProvider : IStorageProvider
     {
         private readonly AzureStorageSettings settings;
         private readonly BlobServiceClient blobServiceClient;
 
-        public AzureStorageProvider(IOptions<AzureStorageSettings> settingsOptions)
+        public AzureStorageProvider(AzureStorageSettings settings)
         {
-            settings = settingsOptions.Value;
+            this.settings = settings;
             blobServiceClient = new BlobServiceClient(settings.ConnectionString);
         }
 

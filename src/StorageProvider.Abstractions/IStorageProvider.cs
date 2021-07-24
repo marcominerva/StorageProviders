@@ -2,7 +2,7 @@
 using System.IO;
 using System.Threading.Tasks;
 
-namespace AzureStorageProvider.Abstractions
+namespace StorageProvider.Abstractions
 {
     public interface IStorageProvider
     {
