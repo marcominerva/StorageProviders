@@ -2,9 +2,9 @@
 using System.IO;
 using System.Threading.Tasks;
 
-namespace AzureStorageProvider
+namespace AzureStorageProvider.Abstractions
 {
-    public interface IAzureStorageProvider
+    public interface IStorageProvider
     {
         Task SaveAsync(string path, Stream stream, bool overwrite = false);
 
@@ -29,7 +29,7 @@ namespace AzureStorageProvider
             return null;
         }
 
-        Task<bool> BlobExistsAsync(string path);
+        Task<bool> ExistsAsync(string path);
 
         IAsyncEnumerable<string> EnumerateAsync(string prefix = null, params string[] extensions);
 

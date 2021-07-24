@@ -2,7 +2,7 @@
 using System.IO;
 using System.Net.Mime;
 using System.Threading.Tasks;
-using AzureStorageProvider;
+using AzureStorageProvider.Abstractions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -15,9 +15,9 @@ namespace AzureStorage.Controllers
     [Produces(MediaTypeNames.Application.Json)]
     public class AttachmentsController : ControllerBase
     {
-        private readonly IAzureStorageProvider storageProvider;
+        private readonly IStorageProvider storageProvider;
 
-        public AttachmentsController(IAzureStorageProvider storageProvider)
+        public AttachmentsController(IStorageProvider storageProvider)
         {
             this.storageProvider = storageProvider;
         }
@@ -42,7 +42,7 @@ namespace AzureStorage.Controllers
         [ProducesDefaultResponseType]
         public async Task<IActionResult> Exists(string fileName)
         {
-            var exists = await storageProvider.BlobExistsAsync(fileName);
+            var exists = await storageProvider.ExistsAsync(fileName);
             if (exists)
             {
                 return NoContent();

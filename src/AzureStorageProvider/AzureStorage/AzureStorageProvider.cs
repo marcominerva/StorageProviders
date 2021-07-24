@@ -5,13 +5,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
-using AzureStorageProvider.Exceptions;
+using AzureStorageProvider.Abstractions;
 using Microsoft.Extensions.Options;
 using MimeMapping;
 
 namespace AzureStorageProvider
 {
-    public class AzureStorageProvider : IAzureStorageProvider
+    internal class AzureStorageProvider : IStorageProvider
     {
         private readonly AzureStorageSettings settings;
         private readonly BlobServiceClient blobServiceClient;
@@ -31,7 +31,7 @@ namespace AzureStorageProvider
                 var blobExists = await blobClient.ExistsAsync().ConfigureAwait(false);
                 if (blobExists)
                 {
-                    throw new ExistingBlobException();
+                    throw new IOException($"The file {path} already exists.");
                 }
             }
 
@@ -56,7 +56,7 @@ namespace AzureStorageProvider
             return stream;
         }
 
-        public async Task<bool> BlobExistsAsync(string path)
+        public async Task<bool> ExistsAsync(string path)
         {
             var blobClient = await GetBlobClientAsync(path).ConfigureAwait(false);
 
