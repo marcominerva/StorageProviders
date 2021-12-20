@@ -1,68 +1,61 @@
+using AzureStorageProvider;
 using Hellang.Middleware.ProblemDetails;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
-using StorageSampleProvider;
 
-namespace StorageSample
+namespace StorageSample;
+
+public class Startup
 {
-    public class Startup
+    public IConfiguration Configuration { get; }
+
+    public Startup(IConfiguration configuration)
+        => Configuration = configuration;
+
+    // This method gets called by the runtime. Use this method to add services to the container.
+    public void ConfigureServices(IServiceCollection services)
     {
-        public IConfiguration Configuration { get; }
+        services.AddControllers();
 
-        public Startup(IConfiguration configuration)
+        services.AddSwaggerGen(options =>
         {
-            Configuration = configuration;
-        }
+            options.SwaggerDoc("v1", new OpenApiInfo { Title = "Azure Storage API", Version = "v1" });
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+            options.MapType<FileContentResult>(() => new OpenApiSchema
+            {
+                Type = "file"
+            });
+        });
+
+        services.AddAzureStorage(options =>
         {
-            services.AddControllers();
+            options.ConnectionString = Configuration.GetConnectionString("AzureStorageConnection");
+            options.ContainerName = Configuration.GetValue<string>("AppSettings:ContainerName");
+        });
 
-            services.AddSwaggerGen(options =>
-            {
-                options.SwaggerDoc("v1", new OpenApiInfo { Title = "Azure Storage API", Version = "v1" });
+        services.AddProblemDetails();
+    }
 
-                options.MapType<FileContentResult>(() => new OpenApiSchema
-                {
-                    Type = "file"
-                });
-            });
+    // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    {
+        app.UseProblemDetails();
+        app.UseHttpsRedirection();
 
-            services.AddAzureStorage(options =>
-            {
-                options.ConnectionString = Configuration.GetConnectionString("AzureStorageConnection");
-                options.ContainerName = Configuration.GetValue<string>("AppSettings:ContainerName");
-            });
-
-            services.AddProblemDetails();
-        }
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        app.UseSwagger();
+        app.UseSwaggerUI(options =>
         {
-            app.UseProblemDetails();
-            app.UseHttpsRedirection();
+            options.SwaggerEndpoint("/swagger/v1/swagger.json", "Azure Storage API v1");
+            options.RoutePrefix = string.Empty;
+        });
 
-            app.UseSwagger();
-            app.UseSwaggerUI(options =>
-            {
-                options.SwaggerEndpoint("/swagger/v1/swagger.json", "Azure Storage API v1");
-                options.RoutePrefix = string.Empty;
-            });
+        app.UseRouting();
 
-            app.UseRouting();
+        app.UseAuthorization();
 
-            app.UseAuthorization();
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
-        }
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapControllers();
+        });
     }
 }

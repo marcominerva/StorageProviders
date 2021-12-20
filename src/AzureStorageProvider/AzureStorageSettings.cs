@@ -1,9 +1,8 @@
-﻿namespace StorageSampleProvider
-{
-    public class AzureStorageSettings
-    {
-        public string ConnectionString { get; set; }
+﻿namespace AzureStorageProvider;
 
-        public string ContainerName { get; set; }
-    }
+public class AzureStorageSettings
+{
+    public string ConnectionString { get; set; } = null!;
+
+    public string ContainerName { get; set; } = null!;
 }
