@@ -19,9 +19,9 @@ public class AttachmentsController : ControllerBase
     [HttpGet("list")]
     [ProducesResponseType(typeof(IEnumerable<string>), StatusCodes.Status200OK)]
     [ProducesDefaultResponseType]
-    public IActionResult GetList(string? prefix = null, [FromQuery(Name = "extension")] string[]? extensions = null)
+    public IActionResult GetList(string? prefix = null, [FromQuery(Name = "extension")] string[] extensions = null!)
     {
-        var attachments = storageProvider.EnumerateAsync(prefix, extensions!);
+        var attachments = storageProvider.EnumerateAsync(prefix, extensions);
 
         // If you need to get the actual list, you can use the .ToListAsync() extension method, like
         // in the following example.
