@@ -12,6 +12,21 @@ public static class AzureStorageProviderExtensions
 
         services.AddSingleton(azureStorageSettings);
         services.AddScoped<IStorageProvider, AzureStorageProvider>();
+
+        return services;
+    }
+
+    public static IServiceCollection AddAzureStorage(this IServiceCollection services, Action<IServiceProvider, AzureStorageSettings> settingsAction)
+    {
+        services.AddScoped(provider =>
+        {
+            var azureStorageSettings = new AzureStorageSettings();
+            settingsAction?.Invoke(provider, azureStorageSettings);
+            return azureStorageSettings;
+        });
+
+        services.AddScoped<IStorageProvider, AzureStorageProvider>();
+
         return services;
     }
 }

@@ -14,7 +14,9 @@ public class AttachmentsController : ControllerBase
     private readonly IStorageProvider storageProvider;
 
     public AttachmentsController(IStorageProvider storageProvider)
-        => this.storageProvider = storageProvider;
+    {
+        this.storageProvider = storageProvider;
+    }
 
     [HttpGet("list")]
     [ProducesResponseType(typeof(IEnumerable<string>), StatusCodes.Status200OK)]
@@ -63,7 +65,7 @@ public class AttachmentsController : ControllerBase
     public async Task<IActionResult> Get(string fileName)
     {
         var attachment = await storageProvider.ReadAsByteArrayAsync(fileName);
-        if (attachment != null)
+        if (attachment is not null)
         {
             return File(attachment, MimeUtility.GetMimeMapping(fileName));
         }

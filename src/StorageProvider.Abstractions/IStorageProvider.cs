@@ -15,7 +15,7 @@ public interface IStorageProvider
     async Task<byte[]?> ReadAsByteArrayAsync(string path)
     {
         using var stream = await ReadAsStreamAsync(path).ConfigureAwait(false);
-        if (stream != null)
+        if (stream is not null)
         {
             using var memoryStream = new MemoryStream();
             await stream.CopyToAsync(memoryStream).ConfigureAwait(false);

@@ -5,4 +5,4 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-[assembly: SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "<Pending>", Scope = "member", Target = "~M:StorageSample.Controllers.AttachmentsController.Get(System.String)~System.Threading.Tasks.Task{Microsoft.AspNetCore.Mvc.IActionResult}")]
+[assembly: SuppressMessage("Style", "IDE1006:Naming Styles", Scope = "namespaceanddescendants", Target = "~N:StorageSample.Controllers")]
