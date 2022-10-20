@@ -1,5 +1,6 @@
 ﻿using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
+using Azure.Storage.Sas;
 using MimeMapping;
 using StorageProvider.Abstractions;
 
@@ -45,6 +46,22 @@ internal class AzureStorageProvider : IStorageProvider
 
         var stream = await blobClient.OpenReadAsync().ConfigureAwait(false);
         return stream;
+    }
+
+    public Task<string> GetSharedAccessUriAsync(string path, DateTime expirationDate)
+    {
+        var (containerName, blobName) = ExtractContainerBlobName(path);
+        var sasBuilder = new BlobSasBuilder(BlobSasPermissions.Read, expirationDate)
+        {
+            BlobContainerName = containerName,
+            BlobName = blobName,
+            Resource = "b",
+        };
+
+        var blobClient = new BlobClient(settings.ConnectionString, containerName, blobName);
+
+        var sharedAccessSignature = blobClient.GenerateSasUri(sasBuilder);
+        return Task.FromResult(sharedAccessSignature.ToString());
     }
 
     public async Task<bool> ExistsAsync(string path)

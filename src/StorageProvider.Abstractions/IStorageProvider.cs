@@ -2,15 +2,15 @@
 
 public interface IStorageProvider
 {
-    Task SaveAsync(string path, Stream stream, bool overwrite = false);
-
-    Task<Stream?> ReadAsStreamAsync(string path);
-
     async Task SaveAsync(string path, byte[] content, bool overwrite = false)
     {
         using var stream = new MemoryStream(content);
         await SaveAsync(path, stream, overwrite).ConfigureAwait(false);
     }
+
+    Task SaveAsync(string path, Stream stream, bool overwrite = false);
+
+    Task<Stream?> ReadAsStreamAsync(string path);
 
     async Task<byte[]?> ReadAsByteArrayAsync(string path)
     {
@@ -24,6 +24,8 @@ public interface IStorageProvider
 
         return null;
     }
+
+    Task<string> GetSharedAccessUriAsync(string path, DateTime expirationDate);
 
     Task<bool> ExistsAsync(string path);
 
