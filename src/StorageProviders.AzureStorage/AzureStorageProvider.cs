@@ -2,9 +2,8 @@
 using Azure.Storage.Blobs.Models;
 using Azure.Storage.Sas;
 using MimeMapping;
-using StorageProvider.Abstractions;
 
-namespace AzureStorageProvider;
+namespace StorageProviders.AzureStorage;
 
 internal class AzureStorageProvider : IStorageProvider
 {
@@ -113,8 +112,8 @@ internal class AzureStorageProvider : IStorageProvider
     {
         path = path?.Replace(@"\", "/") ?? string.Empty;
 
-        // If a container name as been provided in the settings, use it.
-        // Otherwise, extract the first folder name from the path.
+        // If a container name as been provided in the settings, uses it.
+        // Otherwise, extracts the first folder name from the path.
         if (!string.IsNullOrWhiteSpace(settings.ContainerName))
         {
             return (settings.ContainerName.ToLowerInvariant(), path);

@@ -1,4 +1,4 @@
-﻿namespace StorageProvider.Abstractions;
+﻿namespace StorageProviders;
 
 public interface IStorageProvider
 {

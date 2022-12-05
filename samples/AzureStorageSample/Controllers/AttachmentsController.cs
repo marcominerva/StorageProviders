@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using MimeMapping;
-using StorageProvider.Abstractions;
+using StorageProviders;
 
 namespace StorageSample.Controllers;
 
@@ -18,15 +18,14 @@ public class AttachmentsController : ControllerBase
         this.storageProvider = storageProvider;
     }
 
-    [HttpGet("list")]
+    [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<string>), StatusCodes.Status200OK)]
     [ProducesDefaultResponseType]
     public IActionResult GetList(string? prefix = null, [FromQuery(Name = "extension")] string[] extensions = null!)
     {
         var attachments = storageProvider.EnumerateAsync(prefix, extensions);
 
-        // If you need to get the actual list, you can use the .ToListAsync() extension method, like
-        // in the following example.
+        // If you need to get the actual list, you can use the .ToListAsync() extension method:
         //var list = await attachments.ToListAsync();
 
         return Ok(attachments);
@@ -57,7 +56,7 @@ public class AttachmentsController : ControllerBase
         return NoContent();
     }
 
-    [HttpGet]
+    [HttpGet("content")]
     [Produces(contentType: MediaTypeNames.Application.Octet, MediaTypeNames.Application.Json)]
     [ProducesResponseType(typeof(FileContentResult), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]

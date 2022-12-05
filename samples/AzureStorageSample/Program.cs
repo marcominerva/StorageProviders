@@ -1,7 +1,6 @@
-using AzureStorageProvider;
-using Hellang.Middleware.ProblemDetails;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
+using StorageProviders.AzureStorage;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,7 +12,7 @@ builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo { Title = "Azure Storage API", Version = "v1" });
 
-    options.MapType<FileContentResult>(() => new OpenApiSchema
+    options.MapType<FileContentResult>(() => new()
     {
         Type = "file"
     });
@@ -21,15 +20,13 @@ builder.Services.AddSwaggerGen(options =>
 
 builder.Services.AddAzureStorage(options =>
 {
-    options.ConnectionString = builder.Configuration.GetConnectionString("AzureStorageConnection");
+    options.ConnectionString = builder.Configuration.GetConnectionString("AzureStorageConnection")!;
     options.ContainerName = builder.Configuration.GetValue<string>("AppSettings:ContainerName");
 });
 
 builder.Services.AddProblemDetails();
 
 var app = builder.Build();
-
-app.UseProblemDetails();
 app.UseHttpsRedirection();
 
 app.UseSwagger();

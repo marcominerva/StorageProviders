@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using StorageProvider.Abstractions;
 
-namespace AzureStorageProvider;
+namespace StorageProviders.AzureStorage;
 
 public static class AzureStorageProviderExtensions
 {
