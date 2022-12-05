@@ -9,7 +9,7 @@
         <Company>Marco Minerva</Company>
         <Product>Azure Storage Provider</Product>
         <Title>Azure Storage Provider</Title>
-        <Description>A collection of helper methods and classes for ASP.NET Core that I use every day. I have packed them in a single library to avoid code duplication.</Description>
+        <Description>Storage Provider implementation that targets Azure Storage</Description>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageProjectUrl>https://github.com/marcominerva/StorageProviders</PackageProjectUrl>
         <PackageIcon>Toolbox.png</PackageIcon>
