@@ -4,10 +4,13 @@ namespace StorageProviders.AzureStorage;
 
 public static class AzureStorageProviderExtensions
 {
-    public static IServiceCollection AddAzureStorage(this IServiceCollection services, Action<AzureStorageSettings> configuration)
+    public static IServiceCollection AddAzureStorage(this IServiceCollection services, Action<AzureStorageSettings> optionsAction)
     {
+        ArgumentNullException.ThrowIfNull(services);
+        ArgumentNullException.ThrowIfNull(optionsAction);
+
         var azureStorageSettings = new AzureStorageSettings();
-        configuration?.Invoke(azureStorageSettings);
+        optionsAction.Invoke(azureStorageSettings);
 
         services.AddSingleton(azureStorageSettings);
         services.AddScoped<IStorageProvider, AzureStorageProvider>();
@@ -15,12 +18,15 @@ public static class AzureStorageProviderExtensions
         return services;
     }
 
-    public static IServiceCollection AddAzureStorage(this IServiceCollection services, Action<IServiceProvider, AzureStorageSettings> settingsAction)
+    public static IServiceCollection AddAzureStorage(this IServiceCollection services, Action<IServiceProvider, AzureStorageSettings> optionsAction)
     {
+        ArgumentNullException.ThrowIfNull(services);
+        ArgumentNullException.ThrowIfNull(optionsAction);
+
         services.AddScoped(provider =>
         {
             var azureStorageSettings = new AzureStorageSettings();
-            settingsAction?.Invoke(provider, azureStorageSettings);
+            optionsAction.Invoke(provider, azureStorageSettings);
             return azureStorageSettings;
         });
 
