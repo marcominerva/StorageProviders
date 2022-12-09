@@ -25,7 +25,9 @@ public interface IStorageProvider
         return null;
     }
 
-    Task<string> GetSharedAccessUriAsync(string path, DateTime expirationDate);
+    Task<Uri> GetFullPathAsync(string path);
+
+    Task<Uri?> GetReadAccessUriAsync(string path, DateTime expirationDate);
 
     Task<bool> ExistsAsync(string path);
 
