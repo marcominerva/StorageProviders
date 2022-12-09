@@ -47,7 +47,22 @@ internal class AzureStorageProvider : IStorageProvider
         return stream;
     }
 
-    public Task<string> GetSharedAccessUriAsync(string path, DateTime expirationDate)
+    public async Task<bool> ExistsAsync(string path)
+    {
+        var blobClient = await GetBlobClientAsync(path).ConfigureAwait(false);
+
+        var blobExists = await blobClient.ExistsAsync().ConfigureAwait(false);
+        return blobExists;
+    }
+
+    public Task<Uri> GetFullPathAsync(string path)
+    {
+        var (containerName, blobName) = ExtractContainerBlobName(path);
+        var uri = new Uri(blobServiceClient.Uri, $"{containerName}/{blobName}");
+        return Task.FromResult(uri);
+    }
+
+    public Task<Uri?> GetReadAccessUriAsync(string path, DateTime expirationDate)
     {
         var (containerName, blobName) = ExtractContainerBlobName(path);
         var sasBuilder = new BlobSasBuilder(BlobSasPermissions.Read, expirationDate)
@@ -60,15 +75,7 @@ internal class AzureStorageProvider : IStorageProvider
         var blobClient = new BlobClient(settings.ConnectionString, containerName, blobName);
 
         var sharedAccessSignature = blobClient.GenerateSasUri(sasBuilder);
-        return Task.FromResult(sharedAccessSignature.ToString());
-    }
-
-    public async Task<bool> ExistsAsync(string path)
-    {
-        var blobClient = await GetBlobClientAsync(path).ConfigureAwait(false);
-
-        var blobExists = await blobClient.ExistsAsync().ConfigureAwait(false);
-        return blobExists;
+        return Task.FromResult<Uri?>(sharedAccessSignature);
     }
 
     public async IAsyncEnumerable<string> EnumerateAsync(string? prefix = null, params string[] extensions)
@@ -82,7 +89,8 @@ internal class AzureStorageProvider : IStorageProvider
             foreach (var blob in blobPage.Values.Where(b => !b.Deleted &&
                 ((!extensions?.Any() ?? true) || extensions!.Any(e => string.Equals(Path.GetExtension(b.Name), e, StringComparison.InvariantCultureIgnoreCase)))))
             {
-                yield return blob.Name;
+                var name = string.IsNullOrWhiteSpace(settings.ContainerName) ? $"{containerName}/{blob.Name}" : blob.Name;
+                yield return name;
             }
         }
     }
@@ -116,7 +124,7 @@ internal class AzureStorageProvider : IStorageProvider
         // Otherwise, extracts the first folder name from the path.
         if (!string.IsNullOrWhiteSpace(settings.ContainerName))
         {
-            return (settings.ContainerName.ToLowerInvariant(), path);
+            return (settings.ContainerName, path);
         }
 
         var root = Path.GetPathRoot(path);

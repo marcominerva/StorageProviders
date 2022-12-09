@@ -4,5 +4,10 @@ public class AzureStorageSettings
 {
     public string ConnectionString { get; set; } = null!;
 
-    public string? ContainerName { get; set; }
+    private string? containerName;
+    public string? ContainerName
+    {
+        get => containerName;
+        set => containerName = value?.ToLowerInvariant();
+    }
 }

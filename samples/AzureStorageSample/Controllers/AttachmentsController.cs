@@ -35,7 +35,7 @@ public class AttachmentsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesDefaultResponseType]
-    public async Task<IActionResult> Exists(string fileName)
+    public async Task<IActionResult> Exists([BindRequired] string fileName)
     {
         var exists = await storageProvider.ExistsAsync(fileName);
         if (exists)
@@ -44,6 +44,24 @@ public class AttachmentsController : ControllerBase
         }
 
         return NotFound();
+    }
+
+    [HttpGet("fullpath")]
+    [ProducesResponseType(typeof(string), StatusCodes.Status204NoContent)]
+    [ProducesDefaultResponseType]
+    public async Task<IActionResult> GetFullPath([BindRequired] string fileName)
+    {
+        var fullPath = await storageProvider.GetFullPathAsync(fileName);
+        return Ok(fullPath);
+    }
+
+    [HttpGet("readuri")]
+    [ProducesResponseType(typeof(string), StatusCodes.Status204NoContent)]
+    [ProducesDefaultResponseType]
+    public async Task<IActionResult> GetReadAccessUri([BindRequired] string fileName, [BindRequired] DateTime expirationDate)
+    {
+        var readUri = await storageProvider.GetReadAccessUriAsync(fileName, expirationDate);
+        return Ok(readUri);
     }
 
     [HttpPost]
@@ -61,7 +79,7 @@ public class AttachmentsController : ControllerBase
     [ProducesResponseType(typeof(FileContentResult), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesDefaultResponseType]
-    public async Task<IActionResult> Get(string fileName)
+    public async Task<IActionResult> Get([BindRequired] string fileName)
     {
         var attachment = await storageProvider.ReadAsByteArrayAsync(fileName);
         if (attachment is not null)
@@ -75,7 +93,7 @@ public class AttachmentsController : ControllerBase
     [HttpDelete]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesDefaultResponseType]
-    public async Task<IActionResult> Delete(string fileName)
+    public async Task<IActionResult> Delete([BindRequired] string fileName)
     {
         await storageProvider.DeleteAsync(fileName);
         return NoContent();
