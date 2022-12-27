@@ -56,20 +56,20 @@ internal class AzureStorageProvider : IStorageProvider
         return blobExists;
     }
 
-    //public async Task<StorageFileInfo> GetPropertiesAsync(string path, CancellationToken cancellationToken = default)
-    //{
-    //    var blobClient = await GetBlobClientAsync(path, cancellationToken: cancellationToken).ConfigureAwait(false);
-    //    var properties = await blobClient.GetPropertiesAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
+    public async Task<StorageFileInfo> GetPropertiesAsync(string path, CancellationToken cancellationToken = default)
+    {
+        var blobClient = await GetBlobClientAsync(path, cancellationToken: cancellationToken).ConfigureAwait(false);
+        var properties = await blobClient.GetPropertiesAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
 
-    //    var fileInfo = new StorageFileInfo(string.IsNullOrWhiteSpace(settings.ContainerName) ? $"{blobClient.BlobContainerName}/{blobClient.Name}" : blobClient.Name)
-    //    {
-    //        Length = properties.Value.ContentLength,
-    //        CreatedOn = properties.Value.CreatedOn,
-    //        LastModified = properties.Value.LastModified
-    //    };
+        var fileInfo = new StorageFileInfo(string.IsNullOrWhiteSpace(settings.ContainerName) ? $"{blobClient.BlobContainerName}/{blobClient.Name}" : blobClient.Name)
+        {
+            Length = properties.Value.ContentLength,
+            CreatedOn = properties.Value.CreatedOn,
+            LastModified = properties.Value.LastModified
+        };
 
-    //    return fileInfo;
-    //}
+        return fileInfo;
+    }
 
     public Task<Uri> GetFullPathAsync(string path, CancellationToken cancellationToken = default)
     {
