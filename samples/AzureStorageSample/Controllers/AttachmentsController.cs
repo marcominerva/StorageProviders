@@ -47,7 +47,7 @@ public class AttachmentsController : ControllerBase
     }
 
     [HttpGet("fullpath")]
-    [ProducesResponseType(typeof(string), StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [ProducesDefaultResponseType]
     public async Task<IActionResult> GetFullPath([BindRequired] string fileName)
     {
@@ -55,8 +55,17 @@ public class AttachmentsController : ControllerBase
         return Ok(fullPath);
     }
 
+    [HttpGet("info")]
+    [ProducesResponseType(typeof(StorageFileInfo), StatusCodes.Status200OK)]
+    [ProducesDefaultResponseType]
+    public async Task<IActionResult> GetProperties([BindRequired] string fileName)
+    {
+        var properties = await storageProvider.GetPropertiesAsync(fileName);
+        return Ok(properties);
+    }
+
     [HttpGet("readuri")]
-    [ProducesResponseType(typeof(string), StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [ProducesDefaultResponseType]
     public async Task<IActionResult> GetReadAccessUri([BindRequired] string fileName, [BindRequired] DateTime expirationDate)
     {
