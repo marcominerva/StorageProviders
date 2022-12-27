@@ -37,4 +37,6 @@ public interface IStorageProvider
     IAsyncEnumerable<string> EnumerateAsync(string? prefix, string[] extensions, CancellationToken cancellationToken);
 
     Task DeleteAsync(string path, CancellationToken cancellationToken = default);
+
+    Task<StorageFileInfo> GetPropertiesAsync(string path, CancellationToken cancellationToken = default);
 }

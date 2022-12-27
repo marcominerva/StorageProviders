@@ -3,10 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32602.215
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureStorageSample", "samples\AzureStorageSample\AzureStorageSample.csproj", "{301A5B9E-79CC-4973-9532-0B59C8B511BB}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StorageProviders.AzureStorage", "src\StorageProviders.AzureStorage\StorageProviders.AzureStorage.csproj", "{D1865604-E7DD-41C5-83C1-7592CE63DABC}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{F8B49E89-215D-4BAB-B538-F993B97E0A9D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{226500D9-FF8B-4411-82CE-C295FDC56988}"
@@ -18,32 +14,36 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StorageProviders.Abstractions", "src\StorageProviders.Abstractions\StorageProviders.Abstractions.csproj", "{BB420BE5-C6D1-40DD-9DF4-8E5158AE1CC5}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StorageProviders.AzureStorage", "src\StorageProviders.AzureStorage\StorageProviders.AzureStorage.csproj", "{417C8ED0-E6A4-464E-82C0-4B7D5E6272FC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureStorageSample", "samples\AzureStorageSample\AzureStorageSample.csproj", "{03D402B4-ACD0-48B9-A11C-ED5668153BC2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{301A5B9E-79CC-4973-9532-0B59C8B511BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{301A5B9E-79CC-4973-9532-0B59C8B511BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{301A5B9E-79CC-4973-9532-0B59C8B511BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{301A5B9E-79CC-4973-9532-0B59C8B511BB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D1865604-E7DD-41C5-83C1-7592CE63DABC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D1865604-E7DD-41C5-83C1-7592CE63DABC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D1865604-E7DD-41C5-83C1-7592CE63DABC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D1865604-E7DD-41C5-83C1-7592CE63DABC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BB420BE5-C6D1-40DD-9DF4-8E5158AE1CC5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BB420BE5-C6D1-40DD-9DF4-8E5158AE1CC5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BB420BE5-C6D1-40DD-9DF4-8E5158AE1CC5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BB420BE5-C6D1-40DD-9DF4-8E5158AE1CC5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{417C8ED0-E6A4-464E-82C0-4B7D5E6272FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{417C8ED0-E6A4-464E-82C0-4B7D5E6272FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{417C8ED0-E6A4-464E-82C0-4B7D5E6272FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{417C8ED0-E6A4-464E-82C0-4B7D5E6272FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{03D402B4-ACD0-48B9-A11C-ED5668153BC2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03D402B4-ACD0-48B9-A11C-ED5668153BC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03D402B4-ACD0-48B9-A11C-ED5668153BC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03D402B4-ACD0-48B9-A11C-ED5668153BC2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{301A5B9E-79CC-4973-9532-0B59C8B511BB} = {226500D9-FF8B-4411-82CE-C295FDC56988}
-		{D1865604-E7DD-41C5-83C1-7592CE63DABC} = {F8B49E89-215D-4BAB-B538-F993B97E0A9D}
 		{BB420BE5-C6D1-40DD-9DF4-8E5158AE1CC5} = {F8B49E89-215D-4BAB-B538-F993B97E0A9D}
+		{417C8ED0-E6A4-464E-82C0-4B7D5E6272FC} = {F8B49E89-215D-4BAB-B538-F993B97E0A9D}
+		{03D402B4-ACD0-48B9-A11C-ED5668153BC2} = {226500D9-FF8B-4411-82CE-C295FDC56988}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0D59BB19-90C6-4F7C-B009-3576355BAC70}
