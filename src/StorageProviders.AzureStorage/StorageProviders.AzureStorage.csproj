@@ -30,7 +30,7 @@
 
     <ItemGroup>
 		<PackageReference Include="Azure.Storage.Blobs" Version="12.14.1" />
-		<PackageReference Include="StorageProviders.Abstractions" Version="1.0.10" />
+		<PackageReference Include="StorageProviders.Abstractions" Version="1.0.12" />
 	</ItemGroup>
 
     <ItemGroup>

@@ -65,7 +65,8 @@ internal class AzureStorageProvider : IStorageProvider
         {
             Length = properties.Value.ContentLength,
             CreatedOn = properties.Value.CreatedOn,
-            LastModified = properties.Value.LastModified
+            LastModified = properties.Value.LastModified,
+            Metadata = properties.Value.Metadata
         };
 
         return fileInfo;
