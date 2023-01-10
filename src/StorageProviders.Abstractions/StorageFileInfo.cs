@@ -14,6 +14,8 @@ public class StorageFileInfo
 
     public long Length { get; set; }
 
+    public IDictionary<string, string> Metadata { get; set; } = new Dictionary<string, string>();
+
     public StorageFileInfo(string name)
     {
         Name = name;
