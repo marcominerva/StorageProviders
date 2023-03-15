@@ -10,6 +10,8 @@ env:
   NET_VERSION: '7.x'
   PROJECT_NAME: src/StorageProviders.AzureStorage
   PROJECT_FILE: StorageProviders.AzureStorage.csproj  
+  TAG_NAME: azurestorage
+  RELEASE_NAME: StorageProviders.AzureStorage
   
 jobs:
   publish:
@@ -45,7 +47,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
       with:
-          tag_name: abstractions_v${{ steps.nbgv.outputs.NuGetPackageVersion }}
-          release_name: Release Azure Storage ${{ steps.nbgv.outputs.NuGetPackageVersion }}
+          tag_name: ${{ env.TAG_NAME }}_v${{ steps.nbgv.outputs.NuGetPackageVersion }}
+          release_name: ${{ env.RELEASE_NAME }} ${{ steps.nbgv.outputs.NuGetPackageVersion }}
           draft: false
           prerelease: false

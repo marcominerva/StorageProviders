@@ -30,7 +30,11 @@ internal class AzureStorageProvider : IStorageProvider
             }
         }
 
-        stream.Position = 0;
+        if (stream.CanSeek)
+        {
+            stream.Position = 0;
+        }
+
         await blobClient.UploadAsync(stream, new BlobHttpHeaders { ContentType = MimeUtility.GetMimeMapping(path) }, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
