@@ -9,15 +9,8 @@ namespace StorageSample.Controllers;
 [Route("api/attachments")]
 [ApiController]
 [Produces(MediaTypeNames.Application.Json)]
-public class AttachmentsController : ControllerBase
+public class AttachmentsController(IStorageProvider storageProvider) : ControllerBase
 {
-    private readonly IStorageProvider storageProvider;
-
-    public AttachmentsController(IStorageProvider storageProvider)
-    {
-        this.storageProvider = storageProvider;
-    }
-
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<string>), StatusCodes.Status200OK)]
     [ProducesDefaultResponseType]
