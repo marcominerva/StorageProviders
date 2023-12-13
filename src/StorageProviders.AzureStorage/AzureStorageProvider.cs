@@ -6,16 +6,9 @@ using MimeMapping;
 
 namespace StorageProviders.AzureStorage;
 
-internal class AzureStorageProvider : IStorageProvider
+internal class AzureStorageProvider(AzureStorageSettings settings) : IStorageProvider
 {
-    private readonly AzureStorageSettings settings;
-    private readonly BlobServiceClient blobServiceClient;
-
-    public AzureStorageProvider(AzureStorageSettings settings)
-    {
-        this.settings = settings;
-        blobServiceClient = new BlobServiceClient(settings.ConnectionString);
-    }
+    private readonly BlobServiceClient blobServiceClient = new(settings.ConnectionString);
 
     public async Task SaveAsync(string path, Stream stream, bool overwrite = false, CancellationToken cancellationToken = default)
     {
