@@ -134,7 +134,7 @@ internal class AzureStorageProvider(AzureStorageSettings settings) : IStoragePro
     {
         path = path?.Replace(@"\", "/") ?? string.Empty;
 
-        // If is relative path and a container name as been provided in the settings, uses it.
+        // If a relative path and a container name have been provided in the settings, uses them.
         // Otherwise, extracts the first folder name from the path.
         if (!path.StartsWith("/") && !string.IsNullOrWhiteSpace(settings.ContainerName))
         {
