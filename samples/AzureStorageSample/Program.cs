@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 using MimeMapping;
-using MinimalHelpers.OpenApi;
 using StorageProviders;
 using StorageProviders.AzureStorage;
 using TinyHelpers.AspNetCore.Extensions;
@@ -15,7 +14,6 @@ builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo { Title = "Azure Storage API", Version = "v1" });
 
-    options.AddFormFile();
     options.AddDefaultResponse();
 });
 
