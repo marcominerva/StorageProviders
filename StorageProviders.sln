@@ -5,7 +5,7 @@ VisualStudioVersion = 17.2.32602.215
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{F8B49E89-215D-4BAB-B538-F993B97E0A9D}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{226500D9-FF8B-4411-82CE-C295FDC56988}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{226500D9-FF8B-4411-82CE-C295FDC56988}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6E731484-AD80-4E59-A93A-5E18BAAF81BB}"
 	ProjectSection(SolutionItems) = preProject
@@ -17,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StorageProviders.Abstractio
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StorageProviders.AzureStorage", "src\StorageProviders.AzureStorage\StorageProviders.AzureStorage.csproj", "{417C8ED0-E6A4-464E-82C0-4B7D5E6272FC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureStorageSample", "samples\AzureStorageSample\AzureStorageSample.csproj", "{03D402B4-ACD0-48B9-A11C-ED5668153BC2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureStorageSample", "examples\AzureStorageSample\AzureStorageSample.csproj", "{03D402B4-ACD0-48B9-A11C-ED5668153BC2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
