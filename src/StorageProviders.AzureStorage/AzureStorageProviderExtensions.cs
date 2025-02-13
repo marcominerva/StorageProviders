@@ -13,7 +13,7 @@ public static class AzureStorageProviderExtensions
         optionsAction.Invoke(azureStorageSettings);
 
         services.AddSingleton(azureStorageSettings);
-        services.AddScoped<IStorageProvider, AzureStorageProvider>();
+        services.AddSingleton<IStorageProvider, AzureStorageProvider>();
 
         return services;
     }
