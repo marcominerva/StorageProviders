@@ -14,7 +14,7 @@ builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo { Title = "Azure Storage API", Version = "v1" });
 
-    options.AddDefaultResponse();
+    options.AddDefaultProblemDetailsResponse();
 });
 
 builder.Services.AddAzureStorage(options =>
