@@ -1,7 +1,7 @@
 # Storage Providers
 
 [![Lint Code Base](https://github.com/marcominerva/StorageProviders/actions/workflows/linter.yml/badge.svg)](https://github.com/marcominerva/StorageProviders/actions/workflows/linter.yml)
-[![CodeQL](https://github.com/marcominerva/StorageProviders/actions/workflows/codeql.yml/badge.svg)](https://github.com/marcominerva/StorageProviders/actions/workflows/codeql.yml)
+[![CodeQL](https://github.com/marcominerva/StorageProviders/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/marcominerva/StorageProviders/actions/workflows/github-code-scanning/codeql)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/marcominerva/StorageProviders/blob/master/LICENSE)
 
 
