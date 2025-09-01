@@ -1,19 +1,15 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.OpenApi.Models;
 using MimeMapping;
 using StorageProviders;
 using StorageProviders.AzureStorage;
 using TinyHelpers.AspNetCore.Extensions;
-using TinyHelpers.AspNetCore.Swagger;
+using TinyHelpers.AspNetCore.OpenApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
+builder.Services.AddOpenApi(options =>
 {
-    options.SwaggerDoc("v1", new OpenApiInfo { Title = "Azure Storage API", Version = "v1" });
-
     options.AddDefaultProblemDetailsResponse();
 });
 
@@ -32,10 +28,11 @@ app.UseHttpsRedirection();
 app.UseExceptionHandler();
 app.UseStatusCodePages();
 
-app.UseSwagger();
+app.MapOpenApi();
+
 app.UseSwaggerUI(options =>
 {
-    options.SwaggerEndpoint("/swagger/v1/swagger.json", "Azure Storage API v1");
+    options.SwaggerEndpoint("/openapi/v1.json", app.Environment.ApplicationName);
     options.RoutePrefix = string.Empty;
 });
 

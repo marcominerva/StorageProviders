@@ -16,7 +16,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "AzureStorage": {
+    "AzureStorageSample": {
       "commandName": "Project",
       "dotnetRunMessages": "true",
       "launchBrowser": true,
