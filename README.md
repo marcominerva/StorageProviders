@@ -14,10 +14,10 @@ A collection of Storage Providers for various destinations.
 
 **Installation**
 
-The library is available on [NuGet](https://www.nuget.org/packages/StorageProviders.AzureStorage). Just search for *StorageProviders.AzureStorage* in the **Package Manager GUI** or run the following command in the **.NET CLI**:
+The library is available on [NuGet](https://www.nuget.org/packages/StorageProviders.AzureStorage). Search for *StorageProviders.AzureStorage* in the **Package Manager GUI** or run the following command in the **.NET CLI**:
 
     dotnet add package StorageProviders.AzureStorage
 
 **Contribute**
 
-The project is constantly evolving. Contributions are welcome. Feel free to file issues and pull requests on the repo and we'll address them as we can. 
+The project is constantly evolving. Contributions are welcome. Feel free to file issues and pull requests in the repository, and we'll address them as we can. 
