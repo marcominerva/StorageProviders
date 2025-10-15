@@ -25,11 +25,11 @@
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
-        <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.9" />
+        <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.10" />
     </ItemGroup>
 
     <ItemGroup>
-		<PackageReference Include="Azure.Storage.Blobs" Version="12.25.0" />
+		<PackageReference Include="Azure.Storage.Blobs" Version="12.26.0" />
 		<PackageReference Include="StorageProviders.Abstractions" Version="1.0.17" />
 	</ItemGroup>
 
