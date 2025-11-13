@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<TargetFrameworks>net8.0;net9.0</TargetFrameworks>
-		<LangVersion>latest</LangVersion>
-		<Nullable>enable</Nullable>
-		<ImplicitUsings>enable</ImplicitUsings>
+    <PropertyGroup>
+        <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
+        <LangVersion>latest</LangVersion>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
         <Authors>Marco Minerva</Authors>
         <Company>Marco Minerva</Company>
         <Product>Azure Storage Provider</Product>
@@ -25,13 +25,17 @@
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
-        <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.10" />
+        <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.11" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
+        <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="10.0.0" />
     </ItemGroup>
 
     <ItemGroup>
-		<PackageReference Include="Azure.Storage.Blobs" Version="12.26.0" />
-		<PackageReference Include="StorageProviders.Abstractions" Version="1.0.17" />
-	</ItemGroup>
+        <PackageReference Include="Azure.Storage.Blobs" Version="12.26.0" />
+        <PackageReference Include="StorageProviders.Abstractions" Version="1.0.20" />
+    </ItemGroup>
 
     <ItemGroup>
         <None Include="..\..\Toolbox.png">

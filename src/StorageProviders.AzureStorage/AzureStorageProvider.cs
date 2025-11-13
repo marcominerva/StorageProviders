@@ -92,7 +92,7 @@ internal class AzureStorageProvider(AzureStorageSettings settings) : IStoragePro
         return Task.FromResult<Uri?>(sharedAccessSignature);
     }
 
-    public async IAsyncEnumerable<string> EnumerateAsync(string? prefix, string[] extensions, [EnumeratorCancellation] CancellationToken cancellationToken)
+    public async IAsyncEnumerable<string> EnumerateAsync(string? prefix, IEnumerable<string> extensions, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
         var (containerName, pathPrefix) = ExtractContainerBlobName(prefix);
         var blobContainerClient = blobServiceClient.GetBlobContainerClient(containerName);
