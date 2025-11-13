@@ -31,10 +31,10 @@ public interface IStorageProvider
 
     Task<bool> ExistsAsync(string path, CancellationToken cancellationToken = default);
 
-    IAsyncEnumerable<string> EnumerateAsync(string? prefix = null, params string[] extensions)
+    IAsyncEnumerable<string> EnumerateAsync(string? prefix = null, params IEnumerable<string> extensions)
         => EnumerateAsync(prefix, extensions, CancellationToken.None);
 
-    IAsyncEnumerable<string> EnumerateAsync(string? prefix, string[] extensions, CancellationToken cancellationToken);
+    IAsyncEnumerable<string> EnumerateAsync(string? prefix, IEnumerable<string> extensions, CancellationToken cancellationToken);
 
     Task DeleteAsync(string path, CancellationToken cancellationToken = default);
 
