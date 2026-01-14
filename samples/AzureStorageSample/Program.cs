@@ -46,8 +46,7 @@ attachementsApiGroup.MapGet(string.Empty, (IStorageProvider storageProvider, str
     //var list = await attachments.ToListAsync();
 
     return TypedResults.Ok(attachments);
-})
-.WithOpenApi();
+});
 
 attachementsApiGroup.MapGet("exists", async Task<Results<NoContent, NotFound>> (IStorageProvider storageProvider, string fileName) =>
 {
@@ -58,8 +57,7 @@ attachementsApiGroup.MapGet("exists", async Task<Results<NoContent, NotFound>> (
     }
 
     return TypedResults.NoContent();
-})
-.WithOpenApi();
+});
 
 attachementsApiGroup.MapGet("full-path", async (IStorageProvider storageProvider, string fileName) =>
 {
@@ -71,15 +69,13 @@ attachementsApiGroup.MapGet("info", async (IStorageProvider storageProvider, str
 {
     var fullPath = await storageProvider.GetPropertiesAsync(fileName);
     return TypedResults.Ok(fullPath);
-})
-.WithOpenApi();
+});
 
 attachementsApiGroup.MapGet("read-uri", async (IStorageProvider storageProvider, string fileName, DateTime expirationDate) =>
 {
     var readUri = await storageProvider.GetReadAccessUriAsync(fileName, expirationDate);
     return TypedResults.Ok(readUri);
-})
-.WithOpenApi();
+});
 
 attachementsApiGroup.MapPost(string.Empty, async (IFormFile file, IStorageProvider storageProvider, string? folder = null, bool overwrite = false) =>
 {
@@ -88,8 +84,7 @@ attachementsApiGroup.MapPost(string.Empty, async (IFormFile file, IStorageProvid
 
     return TypedResults.NoContent();
 })
-.DisableAntiforgery()
-.WithOpenApi();
+.DisableAntiforgery();
 
 attachementsApiGroup.MapGet("content", async Task<Results<FileStreamHttpResult, NotFound>> (IStorageProvider storageProvider, string fileName) =>
 {
@@ -100,14 +95,12 @@ attachementsApiGroup.MapGet("content", async Task<Results<FileStreamHttpResult, 
     }
 
     return TypedResults.Stream(attachment, MimeUtility.GetMimeMapping(fileName));
-})
-.WithOpenApi();
+});
 
 attachementsApiGroup.MapDelete(string.Empty, async (IStorageProvider storageProvider, string fileName) =>
 {
     await storageProvider.DeleteAsync(fileName);
     return TypedResults.NoContent();
-})
-.WithOpenApi();
+});
 
 app.Run();

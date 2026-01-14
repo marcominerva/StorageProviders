@@ -97,7 +97,7 @@ internal class AzureStorageProvider(AzureStorageSettings settings) : IStoragePro
         var (containerName, pathPrefix) = ExtractContainerBlobName(prefix);
         var blobContainerClient = blobServiceClient.GetBlobContainerClient(containerName);
 
-        var list = blobContainerClient.GetBlobsAsync(prefix: pathPrefix, cancellationToken: cancellationToken).AsPages().WithCancellation(cancellationToken).ConfigureAwait(false);
+        var list = blobContainerClient.GetBlobsAsync(new GetBlobsOptions { Prefix = pathPrefix }, cancellationToken).AsPages().WithCancellation(cancellationToken).ConfigureAwait(false);
         await foreach (var blobPage in list)
         {
             foreach (var blob in blobPage.Values.Where(b => !b.Deleted &&
@@ -136,7 +136,7 @@ internal class AzureStorageProvider(AzureStorageSettings settings) : IStoragePro
 
         // If a relative path and a container name have been provided in the settings, uses them.
         // Otherwise, extracts the first folder name from the path.
-        if (!path.StartsWith("/") && !string.IsNullOrWhiteSpace(settings.ContainerName))
+        if (!path.StartsWith('/') && !string.IsNullOrWhiteSpace(settings.ContainerName))
         {
             return (settings.ContainerName, path);
         }
