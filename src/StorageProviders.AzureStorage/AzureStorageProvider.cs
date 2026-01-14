@@ -10,7 +10,7 @@ internal class AzureStorageProvider(AzureStorageSettings settings) : IStoragePro
 {
     private readonly BlobServiceClient blobServiceClient = new(settings.ConnectionString);
 
-    public async Task SaveAsync(string path, Stream stream, bool overwrite = false, CancellationToken cancellationToken = default)
+    public async Task SaveAsync(string path, Stream stream, bool overwrite = false, IDictionary<string,string>? metadata = null, CancellationToken cancellationToken = default)
     {
         var blobClient = await GetBlobClientAsync(path, true, cancellationToken).ConfigureAwait(false);
 
@@ -28,7 +28,13 @@ internal class AzureStorageProvider(AzureStorageSettings settings) : IStoragePro
             stream.Position = 0;
         }
 
-        await blobClient.UploadAsync(stream, new BlobHttpHeaders { ContentType = MimeUtility.GetMimeMapping(path) }, cancellationToken: cancellationToken).ConfigureAwait(false);
+        var options = new BlobUploadOptions
+        {
+            Metadata = metadata,
+            HttpHeaders = new BlobHttpHeaders { ContentType = MimeUtility.GetMimeMapping(path) }
+        };
+
+        await blobClient.UploadAsync(stream, options, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Stream?> ReadAsStreamAsync(string path, CancellationToken cancellationToken = default)
@@ -115,6 +121,20 @@ internal class AzureStorageProvider(AzureStorageSettings settings) : IStoragePro
         var blobContainerClient = blobServiceClient.GetBlobContainerClient(containerName);
 
         await blobContainerClient.DeleteBlobIfExistsAsync(blobName, cancellationToken: cancellationToken).ConfigureAwait(false);
+    }
+
+    public async Task<bool> SetMetadataAsync(string path, IDictionary<string, string> metadata, CancellationToken cancellationToken = default)
+    {
+        var blobClient = await GetBlobClientAsync(path, cancellationToken: cancellationToken).ConfigureAwait(false);
+
+        var blobExists = await blobClient.ExistsAsync(cancellationToken).ConfigureAwait(false);
+        if (!blobExists)
+        {
+            return false;
+        }
+
+        await blobClient.SetMetadataAsync(metadata);
+        return true;
     }
 
     private async Task<BlobClient> GetBlobClientAsync(string path, bool createIfNotExists = false, CancellationToken cancellationToken = default)
