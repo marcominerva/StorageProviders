@@ -1,3 +1,5 @@
+using System.Text.Json;
+using AzureStorageSample.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using MimeMapping;
@@ -46,8 +48,7 @@ attachementsApiGroup.MapGet(string.Empty, (IStorageProvider storageProvider, str
     //var list = await attachments.ToListAsync();
 
     return TypedResults.Ok(attachments);
-})
-.WithOpenApi();
+});
 
 attachementsApiGroup.MapGet("exists", async Task<Results<NoContent, NotFound>> (IStorageProvider storageProvider, string fileName) =>
 {
@@ -58,8 +59,7 @@ attachementsApiGroup.MapGet("exists", async Task<Results<NoContent, NotFound>> (
     }
 
     return TypedResults.NoContent();
-})
-.WithOpenApi();
+});
 
 attachementsApiGroup.MapGet("full-path", async (IStorageProvider storageProvider, string fileName) =>
 {
@@ -71,15 +71,13 @@ attachementsApiGroup.MapGet("info", async (IStorageProvider storageProvider, str
 {
     var fullPath = await storageProvider.GetPropertiesAsync(fileName);
     return TypedResults.Ok(fullPath);
-})
-.WithOpenApi();
+});
 
 attachementsApiGroup.MapGet("read-uri", async (IStorageProvider storageProvider, string fileName, DateTime expirationDate) =>
 {
     var readUri = await storageProvider.GetReadAccessUriAsync(fileName, expirationDate);
     return TypedResults.Ok(readUri);
-})
-.WithOpenApi();
+});
 
 attachementsApiGroup.MapPost(string.Empty, async (IFormFile file, IStorageProvider storageProvider, string? folder = null, bool overwrite = false) =>
 {
@@ -88,8 +86,28 @@ attachementsApiGroup.MapPost(string.Empty, async (IFormFile file, IStorageProvid
 
     return TypedResults.NoContent();
 })
-.DisableAntiforgery()
-.WithOpenApi();
+.DisableAntiforgery();
+
+attachementsApiGroup.MapPost("uploadwithmetadata", async (IStorageProvider storageProvider, [FromForm] UploadFileWithMetadataRequest request) =>
+{
+    using var stream = request.File.OpenReadStream();
+    var metadata = string.IsNullOrWhiteSpace(request.JsonMetadata)
+                    ? null
+                    : JsonSerializer.Deserialize<Dictionary<string, string>>(request.JsonMetadata);
+
+    await storageProvider.SaveAsync(Path.Combine(request.Folder ?? string.Empty, request.File.FileName), stream, metadata, request.Overwrite);
+
+    return TypedResults.NoContent();
+})
+.DisableAntiforgery();
+
+attachementsApiGroup.MapPut("setmetadata", async (IStorageProvider storageProvider, string fileName, IDictionary<string,string>? metadata = null, string ? folder = null) =>
+{
+    await storageProvider.SetMetadataAsync(Path.Combine(folder ?? string.Empty, fileName), metadata);
+
+    return TypedResults.NoContent();
+})
+.DisableAntiforgery();
 
 attachementsApiGroup.MapGet("content", async Task<Results<FileStreamHttpResult, NotFound>> (IStorageProvider storageProvider, string fileName) =>
 {
@@ -100,14 +118,12 @@ attachementsApiGroup.MapGet("content", async Task<Results<FileStreamHttpResult, 
     }
 
     return TypedResults.Stream(attachment, MimeUtility.GetMimeMapping(fileName));
-})
-.WithOpenApi();
+});
 
 attachementsApiGroup.MapDelete(string.Empty, async (IStorageProvider storageProvider, string fileName) =>
 {
     await storageProvider.DeleteAsync(fileName);
     return TypedResults.NoContent();
-})
-.WithOpenApi();
+});
 
 app.Run();
