@@ -93,7 +93,9 @@ internal class AzureStorageProvider(AzureStorageSettings settings) : IStoragePro
 
         if (!string.IsNullOrWhiteSpace(fileName))
         {
-            sasBuilder.ContentDisposition = $"attachment; filename=\"{fileName}\"";
+            // Escape the file name to prevent header injection vulnerabilities
+            var escapedFileName = fileName.Replace("\\", "\\\\").Replace("\"", "\\\"");
+            sasBuilder.ContentDisposition = $"attachment; filename=\"{escapedFileName}\"";
         }
 
         var blobClient = new BlobClient(settings.ConnectionString, containerName, blobName);

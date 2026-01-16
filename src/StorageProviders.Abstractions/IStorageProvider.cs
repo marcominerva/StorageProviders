@@ -42,10 +42,9 @@ public interface IStorageProvider
     /// </summary>
     /// <param name="path">The path to the file.</param>
     /// <param name="expirationDate">The expiration date for the read access URI.</param>
-    /// <param name="fileName">The optional file name to use for the download. If provided, the Content-Disposition header will be set to suggest this file name to the browser.</param>
+    /// <param name="fileName">The optional file name to use for the download. If provided and supported by the provider, the Content-Disposition header will be set to suggest this file name to the browser.</param>
     /// <param name="cancellationToken">A token to cancel the operation.</param>
     /// <returns>A URI with read access to the file, or <see langword="null" /> if the operation is not supported.</returns>
-    /// <exception cref="NotSupportedException">Thrown when the provider does not support specifying a custom file name.</exception>
     Task<Uri?> GetReadAccessUriAsync(string path, DateTime expirationDate, string? fileName, CancellationToken cancellationToken = default);
 
     Task<bool> ExistsAsync(string path, CancellationToken cancellationToken = default);
