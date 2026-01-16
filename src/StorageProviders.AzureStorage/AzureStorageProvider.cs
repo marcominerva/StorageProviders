@@ -93,8 +93,15 @@ internal class AzureStorageProvider(AzureStorageSettings settings) : IStoragePro
 
         if (!string.IsNullOrWhiteSpace(fileName))
         {
-            // Escape the file name to prevent header injection vulnerabilities
-            var escapedFileName = fileName.Replace("\\", "\\\\").Replace("\"", "\\\"");
+            // Escape the file name to prevent header injection vulnerabilities.
+            // Remove or replace characters that could be used for header injection.
+            var escapedFileName = fileName
+                .Replace("\\", "\\\\")
+                .Replace("\"", "\\\"")
+                .Replace("\r", string.Empty)
+                .Replace("\n", string.Empty)
+                .Replace(";", string.Empty);
+
             sasBuilder.ContentDisposition = $"attachment; filename=\"{escapedFileName}\"";
         }
 
