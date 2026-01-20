@@ -10,28 +10,7 @@ internal class AzureStorageProvider(AzureStorageSettings settings) : IStoragePro
 {
     private readonly BlobServiceClient blobServiceClient = new(settings.ConnectionString);
 
-    public async Task SaveAsync(string path, Stream stream, bool overwrite = false, CancellationToken cancellationToken = default)
-    {
-        var blobClient = await GetBlobClientAsync(path, true, cancellationToken).ConfigureAwait(false);
-
-        if (!overwrite)
-        {
-            var blobExists = await blobClient.ExistsAsync(cancellationToken).ConfigureAwait(false);
-            if (blobExists)
-            {
-                throw new IOException($"The file {path} already exists.");
-            }
-        }
-
-        if (stream.CanSeek)
-        {
-            stream.Position = 0;
-        }
-
-        await blobClient.UploadAsync(stream, new BlobHttpHeaders { ContentType = MimeUtility.GetMimeMapping(path) }, cancellationToken: cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task SaveAsync(string path, Stream stream, IDictionary<string, string>? metadata = null, bool overwrite = false, CancellationToken cancellationToken = default)
+    public async Task SaveAsync(string path, Stream stream, IDictionary<string, string>? metadata, bool overwrite, CancellationToken cancellationToken = default)
     {
         var blobClient = await GetBlobClientAsync(path, true, cancellationToken).ConfigureAwait(false);
 
