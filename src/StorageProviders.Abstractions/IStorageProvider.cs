@@ -2,6 +2,14 @@
 
 public interface IStorageProvider
 {
+    async Task SaveAsync(string path, byte[] content, IDictionary<string, string>? metadata = null, bool overwrite = false, CancellationToken cancellationToken = default)
+    {
+        using var stream = new MemoryStream(content);
+        await SaveAsync(path, stream, metadata, overwrite, cancellationToken).ConfigureAwait(false);
+    }
+
+    Task SaveAsync(string path, Stream stream, IDictionary<string, string>? metadata = null, bool overwrite = false, CancellationToken cancellationToken = default);
+
     async Task SaveAsync(string path, byte[] content, bool overwrite = false, CancellationToken cancellationToken = default)
     {
         using var stream = new MemoryStream(content);
@@ -39,4 +47,6 @@ public interface IStorageProvider
     Task DeleteAsync(string path, CancellationToken cancellationToken = default);
 
     Task<StorageFileInfo> GetPropertiesAsync(string path, CancellationToken cancellationToken = default);
+
+    Task<bool> SetMetadataAsync(string path, IDictionary<string, string>? metadata = null, CancellationToken cancellationToken = default);
 }
