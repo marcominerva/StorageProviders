@@ -101,7 +101,7 @@ attachementsApiGroup.MapPost("uploadwithmetadata", async (IStorageProvider stora
 })
 .DisableAntiforgery();
 
-attachementsApiGroup.MapPut("setmetadata", async (IStorageProvider storageProvider, string fileName, IDictionary<string,string>? metadata = null, string ? folder = null) =>
+attachementsApiGroup.MapPut("setmetadata", async (IStorageProvider storageProvider, string fileName, IDictionary<string, string>? metadata = null, string? folder = null) =>
 {
     await storageProvider.SetMetadataAsync(Path.Combine(folder ?? string.Empty, fileName), metadata);
 

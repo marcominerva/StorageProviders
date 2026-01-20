@@ -160,7 +160,7 @@ internal class AzureStorageProvider(AzureStorageSettings settings) : IStoragePro
         }
 
         // Note: Passing null will wipe/clear any existing metadata on the file.
-        await blobClient.SetMetadataAsync(metadata, cancellationToken: cancellationToken);
+        await blobClient.SetMetadataAsync(metadata, cancellationToken: cancellationToken).ConfigureAwait(false);
         return true;
     }
 
