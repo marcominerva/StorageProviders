@@ -97,7 +97,7 @@ attachementsApiGroup.MapPost("upload-metadata", async Task<Results<NoContent, Ba
     {
         try
         {
-            metadata = JsonSerializer.Deserialize<Dictionary<string, string>>(request.JsonMetadata, new JsonSerializerOptions(JsonSerializerDefaults.Web));
+            metadata = JsonSerializer.Deserialize<Dictionary<string, string>>(request.JsonMetadata, JsonSerializerOptions.Web);
         }
         catch (JsonException)
         {
