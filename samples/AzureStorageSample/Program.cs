@@ -10,15 +10,15 @@ using TinyHelpers.AspNetCore.OpenApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddOpenApi(options =>
-{
-    options.AddDefaultProblemDetailsResponse();
-});
-
 builder.Services.AddAzureStorage(options =>
 {
     options.ConnectionString = builder.Configuration.GetConnectionString("AzureStorageConnection")!;
     options.ContainerName = builder.Configuration.GetValue<string>("AppSettings:ContainerName");
+});
+
+builder.Services.AddOpenApi(options =>
+{
+    options.AddDefaultProblemDetailsResponse();
 });
 
 builder.Services.AddDefaultProblemDetails();
@@ -73,9 +73,9 @@ attachementsApiGroup.MapGet("info", async (IStorageProvider storageProvider, str
     return TypedResults.Ok(fullPath);
 });
 
-attachementsApiGroup.MapGet("read-uri", async (IStorageProvider storageProvider, string fileName, DateTime expirationDate) =>
+attachementsApiGroup.MapGet("read-uri", async (IStorageProvider storageProvider, string fileName, DateTime expirationDate, string? downloadFileName) =>
 {
-    var readUri = await storageProvider.GetReadAccessUriAsync(fileName, expirationDate);
+    var readUri = await storageProvider.GetReadAccessUriAsync(fileName, expirationDate, downloadFileName);
     return TypedResults.Ok(readUri);
 });
 
