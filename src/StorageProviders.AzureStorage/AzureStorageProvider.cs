@@ -237,7 +237,7 @@ internal class AzureStorageProvider(AzureStorageSettings settings) : IStoragePro
                 asciiFallback.Append(ch);
             }
             // Replace non-ASCII characters with underscore
-            else if (ch > 127)
+            else if (!char.IsAscii(ch))
             {
                 asciiFallback.Append('_');
             }
