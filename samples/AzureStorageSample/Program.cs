@@ -1,3 +1,5 @@
+using System.Text.Json;
+using AzureStorageSample.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using MimeMapping;
@@ -81,6 +83,41 @@ attachementsApiGroup.MapPost(string.Empty, async (IFormFile file, IStorageProvid
 {
     using var stream = file.OpenReadStream();
     await storageProvider.SaveAsync(Path.Combine(folder ?? string.Empty, file.FileName), stream, overwrite);
+
+    return TypedResults.NoContent();
+})
+.DisableAntiforgery();
+
+attachementsApiGroup.MapPost("upload-metadata", async Task<Results<NoContent, BadRequest<string>>> (IStorageProvider storageProvider, [FromForm] UploadFileWithMetadataRequest request, CancellationToken cancellationToken) =>
+{
+    using var stream = request.File.OpenReadStream();
+    
+    Dictionary<string, string>? metadata = null;
+    if (!string.IsNullOrWhiteSpace(request.JsonMetadata))
+    {
+        try
+        {
+            metadata = JsonSerializer.Deserialize<Dictionary<string, string>>(request.JsonMetadata, new JsonSerializerOptions(JsonSerializerDefaults.Web));
+        }
+        catch (JsonException)
+        {
+            return TypedResults.BadRequest("The JsonMetadata field contains invalid JSON.");
+        }
+    }
+
+    await storageProvider.SaveAsync(Path.Combine(request.Folder ?? string.Empty, request.File.FileName), stream, metadata, request.Overwrite, cancellationToken);
+
+    return TypedResults.NoContent();
+})
+.DisableAntiforgery();
+
+attachementsApiGroup.MapPut("metadata", async Task<Results<NoContent, NotFound>> (IStorageProvider storageProvider, string fileName, IDictionary<string, string>? metadata = null, string? folder = null) =>
+{
+    var success = await storageProvider.SetMetadataAsync(Path.Combine(folder ?? string.Empty, fileName), metadata);
+    if (!success)
+    {
+        return TypedResults.NotFound();
+    }
 
     return TypedResults.NoContent();
 })
