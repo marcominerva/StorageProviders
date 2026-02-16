@@ -34,6 +34,7 @@
 
     <ItemGroup>
         <PackageReference Include="Azure.Storage.Blobs" Version="12.27.0" />
+        <PackageReference Include="StorageProviders.Abstractions" Version="1.0.33" />
     </ItemGroup>
 
     <ItemGroup>
@@ -42,10 +43,6 @@
             <PackagePath></PackagePath>
         </None>
         <None Include="..\..\README.md" Pack="true" PackagePath="\" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\StorageProviders.Abstractions\StorageProviders.Abstractions.csproj" />
     </ItemGroup>
 
 </Project>
