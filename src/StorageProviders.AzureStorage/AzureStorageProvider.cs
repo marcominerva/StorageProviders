@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+using System.Runtime.CompilerServices;
+using System.Text;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Azure.Storage.Sas;
@@ -99,16 +100,7 @@ internal class AzureStorageProvider(AzureStorageSettings settings) : IStoragePro
 
         if (!string.IsNullOrWhiteSpace(fileName))
         {
-            // Escape the file name to prevent header injection vulnerabilities.
-            // Remove or replace characters that could be used for header injection.
-            var escapedFileName = fileName
-                .Replace("\\", "\\\\")
-                .Replace("\"", "\\\"")
-                .Replace("\r", string.Empty)
-                .Replace("\n", string.Empty)
-                .Replace(";", string.Empty);
-
-            sasBuilder.ContentDisposition = $"attachment; filename=\"{escapedFileName}\"";
+            sasBuilder.ContentDisposition = CreateContentDispositionHeader(fileName);
         }
 
         var blobClient = new BlobClient(settings.ConnectionString, containerName, blobName);
@@ -194,5 +186,79 @@ internal class AzureStorageProvider(AzureStorageSettings settings) : IStoragePro
         var blobName = string.Join('/', parts.Skip(1));
 
         return (containerName, blobName);
+    }
+
+    /// <summary>
+    /// Creates a Content-Disposition header value that follows RFC 5987 for proper handling
+    /// of international characters and prevents header injection vulnerabilities.
+    /// </summary>
+    /// <param name="fileName">The file name to include in the Content-Disposition header.</param>
+    /// <returns>A properly formatted Content-Disposition header value.</returns>
+    /// <remarks>
+    /// This method implements RFC 5987/RFC 2231 by providing both a <c>filename</c> parameter
+    /// (ASCII fallback) and a <c>filename*</c> parameter (UTF-8 encoded) for international characters.
+    /// All control characters (U+0000 to U+001F and U+007F to U+009F) are removed to prevent
+    /// header injection attacks.
+    /// </remarks>
+    private static string CreateContentDispositionHeader(string fileName)
+    {
+        // Remove all control characters (U+0000 to U+001F and U+007F to U+009F) to prevent header injection.
+        // This includes \r, \n, \t, and other potentially dangerous characters.
+        var sanitized = new StringBuilder(fileName.Length);
+        foreach (var ch in fileName)
+        {
+            // Keep only characters that are not control characters
+            if (ch is not (>= '\u0000' and <= '\u001F') and not (>= '\u007F' and <= '\u009F'))
+            {
+                sanitized.Append(ch);
+            }
+        }
+
+        var sanitizedFileName = sanitized.ToString();
+
+        // Create ASCII fallback: keep only ASCII characters, replace others with underscore
+        var asciiFallback = new StringBuilder(sanitizedFileName.Length);
+        foreach (var ch in sanitizedFileName)
+        {
+            if (ch <= 127 && ch != '"' && ch != '\\' && ch != ';')
+            {
+                asciiFallback.Append(ch);
+            }
+            else if (ch > 127)
+            {
+                asciiFallback.Append('_');
+            }
+            else if (ch is '"' or '\\')
+            {
+                // Escape quotes and backslashes
+                asciiFallback.Append('\\');
+                asciiFallback.Append(ch);
+            }
+        }
+
+        // RFC 5987 percent-encoding for filename*
+        // Characters that need encoding: anything outside ASCII printable range or special chars
+        var encodedFileName = new StringBuilder(sanitizedFileName.Length * 3);
+        foreach (var ch in sanitizedFileName)
+        {
+            if (ch is (>= 'A' and <= 'Z') or (>= 'a' and <= 'z') or (>= '0' and <= '9') or '-' or '_' or '.' or '~')
+            {
+                // Unreserved characters per RFC 3986
+                encodedFileName.Append(ch);
+            }
+            else
+            {
+                // Percent-encode everything else
+                var bytes = Encoding.UTF8.GetBytes([ch]);
+                foreach (var b in bytes)
+                {
+                    encodedFileName.Append('%');
+                    encodedFileName.Append(b.ToString("X2"));
+                }
+            }
+        }
+
+        // Return Content-Disposition with both filename (ASCII fallback) and filename* (UTF-8)
+        return $"attachment; filename=\"{asciiFallback}\"; filename*=UTF-8''{encodedFileName}";
     }
 }
