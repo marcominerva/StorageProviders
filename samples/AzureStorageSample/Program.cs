@@ -1,3 +1,5 @@
+using System.Text.Json;
+using AzureStorageSample.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using MimeMapping;
@@ -8,15 +10,15 @@ using TinyHelpers.AspNetCore.OpenApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddOpenApi(options =>
-{
-    options.AddDefaultProblemDetailsResponse();
-});
-
 builder.Services.AddAzureStorage(options =>
 {
     options.ConnectionString = builder.Configuration.GetConnectionString("AzureStorageConnection")!;
     options.ContainerName = builder.Configuration.GetValue<string>("AppSettings:ContainerName");
+});
+
+builder.Services.AddOpenApi(options =>
+{
+    options.AddDefaultProblemDetailsResponse();
 });
 
 builder.Services.AddDefaultProblemDetails();
@@ -71,9 +73,9 @@ attachementsApiGroup.MapGet("info", async (IStorageProvider storageProvider, str
     return TypedResults.Ok(fullPath);
 });
 
-attachementsApiGroup.MapGet("read-uri", async (IStorageProvider storageProvider, string fileName, DateTime expirationDate) =>
+attachementsApiGroup.MapGet("read-uri", async (IStorageProvider storageProvider, string fileName, DateTime expirationDate, string? downloadFileName) =>
 {
-    var readUri = await storageProvider.GetReadAccessUriAsync(fileName, expirationDate);
+    var readUri = await storageProvider.GetReadAccessUriAsync(fileName, expirationDate, downloadFileName);
     return TypedResults.Ok(readUri);
 });
 
@@ -81,6 +83,26 @@ attachementsApiGroup.MapPost(string.Empty, async (IFormFile file, IStorageProvid
 {
     using var stream = file.OpenReadStream();
     await storageProvider.SaveAsync(Path.Combine(folder ?? string.Empty, file.FileName), stream, overwrite);
+
+    return TypedResults.NoContent();
+})
+.DisableAntiforgery();
+
+attachementsApiGroup.MapPost("upload-metadata", async (IStorageProvider storageProvider, [FromForm] UploadFileWithMetadataRequest request, CancellationToken cancellationToken) =>
+{
+    using var stream = request.File.OpenReadStream();
+    var metadata = string.IsNullOrWhiteSpace(request.JsonMetadata) ? null
+                    : JsonSerializer.Deserialize<Dictionary<string, string>>(request.JsonMetadata, JsonSerializerOptions.Web);
+
+    await storageProvider.SaveAsync(Path.Combine(request.Folder ?? string.Empty, request.File.FileName), stream, metadata, request.Overwrite, cancellationToken);
+
+    return TypedResults.NoContent();
+})
+.DisableAntiforgery();
+
+attachementsApiGroup.MapPut("metadata", async (IStorageProvider storageProvider, string fileName, IDictionary<string, string>? metadata = null, string? folder = null) =>
+{
+    await storageProvider.SetMetadataAsync(Path.Combine(folder ?? string.Empty, fileName), metadata);
 
     return TypedResults.NoContent();
 })
