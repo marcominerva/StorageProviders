@@ -10,15 +10,15 @@ using TinyHelpers.AspNetCore.OpenApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddOpenApi(options =>
-{
-    options.AddDefaultProblemDetailsResponse();
-});
-
 builder.Services.AddAzureStorage(options =>
 {
     options.ConnectionString = builder.Configuration.GetConnectionString("AzureStorageConnection")!;
     options.ContainerName = builder.Configuration.GetValue<string>("AppSettings:ContainerName");
+});
+
+builder.Services.AddOpenApi(options =>
+{
+    options.AddDefaultProblemDetailsResponse();
 });
 
 builder.Services.AddDefaultProblemDetails();
@@ -88,22 +88,11 @@ attachementsApiGroup.MapPost(string.Empty, async (IFormFile file, IStorageProvid
 })
 .DisableAntiforgery();
 
-attachementsApiGroup.MapPost("upload-metadata", async Task<Results<NoContent, BadRequest<string>>> (IStorageProvider storageProvider, [FromForm] UploadFileWithMetadataRequest request, CancellationToken cancellationToken) =>
+attachementsApiGroup.MapPost("upload-metadata", async (IStorageProvider storageProvider, [FromForm] UploadFileWithMetadataRequest request, CancellationToken cancellationToken) =>
 {
     using var stream = request.File.OpenReadStream();
-    
-    Dictionary<string, string>? metadata = null;
-    if (!string.IsNullOrWhiteSpace(request.JsonMetadata))
-    {
-        try
-        {
-            metadata = JsonSerializer.Deserialize<Dictionary<string, string>>(request.JsonMetadata, JsonSerializerOptions.Web);
-        }
-        catch (JsonException)
-        {
-            return TypedResults.BadRequest("The JsonMetadata field contains invalid JSON.");
-        }
-    }
+    var metadata = string.IsNullOrWhiteSpace(request.JsonMetadata) ? null
+                    : JsonSerializer.Deserialize<Dictionary<string, string>>(request.JsonMetadata, JsonSerializerOptions.Web);
 
     await storageProvider.SaveAsync(Path.Combine(request.Folder ?? string.Empty, request.File.FileName), stream, metadata, request.Overwrite, cancellationToken);
 
@@ -111,13 +100,9 @@ attachementsApiGroup.MapPost("upload-metadata", async Task<Results<NoContent, Ba
 })
 .DisableAntiforgery();
 
-attachementsApiGroup.MapPut("metadata", async Task<Results<NoContent, NotFound>> (IStorageProvider storageProvider, string fileName, IDictionary<string, string>? metadata = null, string? folder = null) =>
+attachementsApiGroup.MapPut("metadata", async (IStorageProvider storageProvider, string fileName, IDictionary<string, string>? metadata = null, string? folder = null) =>
 {
-    var success = await storageProvider.SetMetadataAsync(Path.Combine(folder ?? string.Empty, fileName), metadata);
-    if (!success)
-    {
-        return TypedResults.NotFound();
-    }
+    await storageProvider.SetMetadataAsync(Path.Combine(folder ?? string.Empty, fileName), metadata);
 
     return TypedResults.NoContent();
 })

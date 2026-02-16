@@ -45,7 +45,7 @@ internal class AzureStorageProvider(AzureStorageSettings settings) : IStoragePro
         var blobExists = await blobClient.ExistsAsync(cancellationToken).ConfigureAwait(false);
         if (!blobExists)
         {
-            return null;
+            throw new FileNotFoundException($"The file {path} does not exist.");
         }
 
         var stream = await blobClient.OpenReadAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -139,19 +139,18 @@ internal class AzureStorageProvider(AzureStorageSettings settings) : IStoragePro
         await blobContainerClient.DeleteBlobIfExistsAsync(blobName, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<bool> SetMetadataAsync(string path, IDictionary<string, string>? metadata = null, CancellationToken cancellationToken = default)
+    public async Task SetMetadataAsync(string path, IDictionary<string, string>? metadata = null, CancellationToken cancellationToken = default)
     {
         var blobClient = await GetBlobClientAsync(path, cancellationToken: cancellationToken).ConfigureAwait(false);
 
         var blobExists = await blobClient.ExistsAsync(cancellationToken).ConfigureAwait(false);
         if (!blobExists)
         {
-            return false;
+            throw new FileNotFoundException($"The file {path} does not exist.");
         }
 
         // Note: Passing null will wipe/clear any existing metadata on the file.
         await blobClient.SetMetadataAsync(metadata, cancellationToken: cancellationToken).ConfigureAwait(false);
-        return true;
     }
 
     private async Task<BlobClient> GetBlobClientAsync(string path, bool createIfNotExists = false, CancellationToken cancellationToken = default)
