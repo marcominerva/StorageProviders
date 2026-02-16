@@ -229,7 +229,7 @@ internal class AzureStorageProvider(AzureStorageSettings settings) : IStoragePro
             // Skip semicolon to prevent header manipulation
             else if (ch == ';')
             {
-                // Skip semicolon
+                continue;
             }
             // Keep printable ASCII characters (space to ~, excluding control chars)
             else if (ch >= 32 && ch <= 126)
@@ -244,30 +244,23 @@ internal class AzureStorageProvider(AzureStorageSettings settings) : IStoragePro
         }
 
         // RFC 5987 percent-encoding for filename*
-        // Encode the entire string at once for better performance
-        var utf8Bytes = Encoding.UTF8.GetBytes(sanitizedFileName);
-        var encodedFileName = new StringBuilder(utf8Bytes.Length * 3);
-        
-        var charIndex = 0;
+        var encodedFileName = new StringBuilder(sanitizedFileName.Length * 3);
         foreach (var ch in sanitizedFileName)
         {
             if (ch is (>= 'A' and <= 'Z') or (>= 'a' and <= 'z') or (>= '0' and <= '9') or '-' or '_' or '.' or '~')
             {
                 // Unreserved characters per RFC 3986 - no encoding needed
                 encodedFileName.Append(ch);
-                charIndex++;
             }
             else
             {
                 // Percent-encode everything else
-                // Get the UTF-8 bytes for this character
                 var charBytes = Encoding.UTF8.GetBytes([ch]);
                 foreach (var b in charBytes)
                 {
                     encodedFileName.Append('%');
                     encodedFileName.Append(b.ToString("X2"));
                 }
-                charIndex++;
             }
         }
 
