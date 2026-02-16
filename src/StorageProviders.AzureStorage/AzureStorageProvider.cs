@@ -76,7 +76,12 @@ internal class AzureStorageProvider(AzureStorageSettings settings) : IStoragePro
         return Task.FromResult(uri);
     }
 
+    /// <inheritdoc />
     public Task<Uri?> GetReadAccessUriAsync(string path, DateTime expirationDate, CancellationToken cancellationToken = default)
+        => GetReadAccessUriAsync(path, expirationDate, fileName: null, cancellationToken);
+
+    /// <inheritdoc />
+    public Task<Uri?> GetReadAccessUriAsync(string path, DateTime expirationDate, string? fileName, CancellationToken cancellationToken = default)
     {
         var (containerName, blobName) = ExtractContainerBlobName(path);
         var sasBuilder = new BlobSasBuilder(BlobSasPermissions.Read, expirationDate)
@@ -85,6 +90,20 @@ internal class AzureStorageProvider(AzureStorageSettings settings) : IStoragePro
             BlobName = blobName,
             Resource = "b",
         };
+
+        if (!string.IsNullOrWhiteSpace(fileName))
+        {
+            // Escape the file name to prevent header injection vulnerabilities.
+            // Remove or replace characters that could be used for header injection.
+            var escapedFileName = fileName
+                .Replace("\\", "\\\\")
+                .Replace("\"", "\\\"")
+                .Replace("\r", string.Empty)
+                .Replace("\n", string.Empty)
+                .Replace(";", string.Empty);
+
+            sasBuilder.ContentDisposition = $"attachment; filename=\"{escapedFileName}\"";
+        }
 
         var blobClient = new BlobClient(settings.ConnectionString, containerName, blobName);
 
