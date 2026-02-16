@@ -49,5 +49,5 @@ public interface IStorageProvider
 
     Task<StorageFileInfo> GetPropertiesAsync(string path, CancellationToken cancellationToken = default);
 
-    Task<bool> SetMetadataAsync(string path, IDictionary<string, string>? metadata = null, CancellationToken cancellationToken = default);
+    Task SetMetadataAsync(string path, IDictionary<string, string>? metadata = null, CancellationToken cancellationToken = default);
 }
