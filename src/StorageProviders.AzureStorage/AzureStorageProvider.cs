@@ -83,12 +83,7 @@ internal class AzureStorageProvider(AzureStorageSettings settings) : IStoragePro
         return Task.FromResult(uri);
     }
 
-    /// <inheritdoc />
-    public Task<Uri?> GetReadAccessUriAsync(string path, DateTime expirationDate, CancellationToken cancellationToken = default)
-        => GetReadAccessUriAsync(path, expirationDate, fileName: null, cancellationToken);
-
-    /// <inheritdoc />
-    public Task<Uri?> GetReadAccessUriAsync(string path, DateTime expirationDate, string? fileName, CancellationToken cancellationToken = default)
+    public Task<Uri?> GetReadAccessUriAsync(string path, DateTime expirationDate, string? fileName = null, CancellationToken cancellationToken = default)
     {
         var (containerName, blobName) = ExtractContainerBlobName(path);
         var sasBuilder = new BlobSasBuilder(BlobSasPermissions.Read, expirationDate)
@@ -231,7 +226,7 @@ internal class AzureStorageProvider(AzureStorageSettings settings) : IStoragePro
                 continue;
             }
             // Keep printable ASCII characters (space to ~, excluding control chars)
-            else if (ch >= 32 && ch <= 126)
+            else if (ch is >= (char)32 and <= (char)126)
             {
                 asciiFallback.Append(ch);
             }
