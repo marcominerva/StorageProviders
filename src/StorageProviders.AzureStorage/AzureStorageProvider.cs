@@ -95,7 +95,7 @@ internal class AzureStorageProvider(AzureStorageSettings settings) : IStoragePro
         {
             BlobContainerName = containerName,
             BlobName = blobName,
-            Resource = "b",
+            Resource = "b"
         };
 
         if (!string.IsNullOrWhiteSpace(fileName))
