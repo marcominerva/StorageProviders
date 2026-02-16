@@ -10,15 +10,15 @@ using TinyHelpers.AspNetCore.OpenApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddOpenApi(options =>
-{
-    options.AddDefaultProblemDetailsResponse();
-});
-
 builder.Services.AddAzureStorage(options =>
 {
     options.ConnectionString = builder.Configuration.GetConnectionString("AzureStorageConnection")!;
     options.ContainerName = builder.Configuration.GetValue<string>("AppSettings:ContainerName");
+});
+
+builder.Services.AddOpenApi(options =>
+{
+    options.AddDefaultProblemDetailsResponse();
 });
 
 builder.Services.AddDefaultProblemDetails();
