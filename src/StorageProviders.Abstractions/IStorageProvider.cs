@@ -55,6 +55,7 @@ public interface IStorageProvider
     /// <param name="cancellationToken">A token to cancel the operation.</param>
     /// <returns>A URI with read access to the file, or <see langword="null" /> if the operation is not supported.</returns>
     Task<Uri?> GetReadAccessUriAsync(string path, DateTime expirationDate, string? fileName, CancellationToken cancellationToken = default);
+    
     Task<bool> ExistsAsync(string path, CancellationToken cancellationToken = default);
 
     IAsyncEnumerable<string> EnumerateAsync(string? prefix = null, params IEnumerable<string> extensions)
