@@ -5,6 +5,7 @@
 		<LangVersion>latest</LangVersion>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
+        <DocumentationFile>StorageProviders.Abstractions.xml</DocumentationFile>
         <RootNamespace>StorageProviders</RootNamespace>
         <Authors>Marco Minerva</Authors>
         <Company>Marco Minerva</Company>
@@ -20,6 +21,10 @@
         <RepositoryBranch>master</RepositoryBranch>
         <PackageReadmeFile>README.md</PackageReadmeFile>
 	</PropertyGroup>
+
+    <ItemGroup>
+        <None Remove="StorageProviders.Abstractions.xml" />
+    </ItemGroup>
 
     <ItemGroup>
 		<PackageReference Include="MimeMapping" Version="4.0.0" />
