@@ -5,6 +5,7 @@
         <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
+        <DocumentationFile>StorageProviders.AzureStorage.xml</DocumentationFile>
         <Authors>Marco Minerva</Authors>
         <Company>Marco Minerva</Company>
         <Product>Azure Storage Provider</Product>
@@ -20,21 +21,28 @@
         <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
 
+    <ItemGroup>
+        <None Remove="StorageProviders.AzureStorage.xml" />
+    </ItemGroup>
+
     <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
         <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.1" />
+        <PackageReference Include="Azure.Storage.Blobs" Version="12.27.0" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
-        <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.15" />
+        <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.17" />
+        <PackageReference Include="Azure.Storage.Blobs" Version="12.27.0" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
-        <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="10.0.6" />
+        <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="10.0.9" />
+        <PackageReference Include="Azure.Storage.Blobs" Version="12.29.0" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Azure.Storage.Blobs" Version="12.27.0" />
-        <PackageReference Include="StorageProviders.Abstractions" Version="1.0.35" />
+        
+        <PackageReference Include="StorageProviders.Abstractions" Version="1.0.36" />
     </ItemGroup>
 
     <ItemGroup>
