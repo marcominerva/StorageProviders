@@ -41,7 +41,6 @@
     </ItemGroup>
 
     <ItemGroup>
-
         <PackageReference Include="StorageProviders.Abstractions" Version="1.0.36" />
     </ItemGroup>
 
