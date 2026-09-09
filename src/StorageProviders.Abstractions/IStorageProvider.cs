@@ -18,7 +18,7 @@ public interface IStorageProvider
     /// <param name="overwrite"><see langword="true" /> to replace an existing object at <paramref name="path" />; <see langword="false" /> to let the provider protect existing content.</param>
     /// <param name="cancellationToken">A token that can cancel the save operation.</param>
     /// <returns>A task that completes when the content has been accepted by the provider.</returns>
-    async Task SaveAsync(string path, byte[] content, IDictionary<string, string>? metadata, bool overwrite = false, CancellationToken cancellationToken = default)
+    async Task SaveAsync(string path, byte[] content, IDictionary<string, string?>? metadata, bool overwrite = false, CancellationToken cancellationToken = default)
     {
         using var stream = new MemoryStream(content);
         await SaveAsync(path, stream, metadata, overwrite, cancellationToken).ConfigureAwait(false);
@@ -33,7 +33,7 @@ public interface IStorageProvider
     /// <param name="overwrite"><see langword="true" /> to replace an existing object at <paramref name="path" />; <see langword="false" /> to let the provider protect existing content.</param>
     /// <param name="cancellationToken">A token that can cancel the save operation.</param>
     /// <returns>A task that completes when the content has been accepted by the provider.</returns>
-    Task SaveAsync(string path, Stream stream, IDictionary<string, string>? metadata, bool overwrite = false, CancellationToken cancellationToken = default);
+    Task SaveAsync(string path, Stream stream, IDictionary<string, string?>? metadata, bool overwrite = false, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Saves binary content to a logical storage path when no metadata needs to be supplied.
@@ -77,14 +77,15 @@ public interface IStorageProvider
     async Task<byte[]?> ReadAsByteArrayAsync(string path, CancellationToken cancellationToken = default)
     {
         using var stream = await ReadAsStreamAsync(path, cancellationToken).ConfigureAwait(false);
-        if (stream is not null)
+
+        if (stream is null)
         {
-            using var memoryStream = new MemoryStream();
-            await stream.CopyToAsync(memoryStream, cancellationToken).ConfigureAwait(false);
-            return memoryStream.ToArray();
+            return null;
         }
 
-        return null;
+        using var memoryStream = new MemoryStream();
+        await stream.CopyToAsync(memoryStream, cancellationToken).ConfigureAwait(false);
+        return memoryStream.ToArray();
     }
 
     /// <summary>
@@ -164,5 +165,5 @@ public interface IStorageProvider
     /// <param name="metadata">The metadata to apply, or <see langword="null" /> when metadata should be cleared or omitted according to provider behavior.</param>
     /// <param name="cancellationToken">A token that can cancel the metadata update operation.</param>
     /// <returns>A task that completes when the provider has processed the metadata update.</returns>
-    Task SetMetadataAsync(string path, IDictionary<string, string>? metadata = null, CancellationToken cancellationToken = default);
+    Task SetMetadataAsync(string path, IDictionary<string, string?>? metadata = null, CancellationToken cancellationToken = default);
 }
