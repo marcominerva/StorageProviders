@@ -36,5 +36,5 @@ public class StorageFileInfo(string name)
     /// <summary>
     /// Gets or sets provider-specific metadata associated with the stored object.
     /// </summary>
-    public IDictionary<string, string> Metadata { get; set; } = new Dictionary<string, string>();
+    public IDictionary<string, string?> Metadata { get; set; } = new Dictionary<string, string?>();
 }
