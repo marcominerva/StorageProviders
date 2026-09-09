@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>StorageProviders.FileSystem</name>
+    </assembly>
+    <members>
+        <member name="P:StorageProviders.FileSystem.FileSystemJsonSerializerContext.FileSystemMetadata">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:StorageProviders.FileSystem.FileSystemJsonSerializerContext.String">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:StorageProviders.FileSystem.FileSystemJsonSerializerContext.Default">
+            <summary>
+            The default <see cref="T:System.Text.Json.Serialization.JsonSerializerContext"/> associated with a default <see cref="T:System.Text.Json.JsonSerializerOptions"/> instance.
+            </summary>
+        </member>
+        <member name="P:StorageProviders.FileSystem.FileSystemJsonSerializerContext.GeneratedSerializerOptions">
+            <summary>
+            The source-generated options associated with this context.
+            </summary>
+        </member>
+        <member name="M:StorageProviders.FileSystem.FileSystemJsonSerializerContext.#ctor">
+            <inheritdoc/>
+        </member>
+        <member name="M:StorageProviders.FileSystem.FileSystemJsonSerializerContext.#ctor(System.Text.Json.JsonSerializerOptions)">
+            <inheritdoc/>
+        </member>
+        <member name="M:StorageProviders.FileSystem.FileSystemJsonSerializerContext.GetTypeInfo(System.Type)">
+            <inheritdoc/>
+        </member>
+        <member name="T:StorageProviders.FileSystem.FileSystemStorageProviderExtensions">
+            <summary>
+            Provides dependency-injection registration methods for the local file-system implementation of <see cref="T:StorageProviders.IStorageProvider" />.
+            </summary>
+        </member>
+        <member name="M:StorageProviders.FileSystem.FileSystemStorageProviderExtensions.AddFileSystemStorage(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{StorageProviders.FileSystem.FileSystemStorageSettings})">
+            <inheritdoc cref="M:StorageProviders.FileSystem.FileSystemStorageProviderExtensions.&lt;G&gt;$7B30185E57B8298C6754F16C0BCF4773.AddFileSystemStorage(System.Action{StorageProviders.FileSystem.FileSystemStorageSettings})"/>
+        </member>
+        <member name="M:StorageProviders.FileSystem.FileSystemStorageProviderExtensions.AddFileSystemStorage(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{System.IServiceProvider,StorageProviders.FileSystem.FileSystemStorageSettings})">
+            <inheritdoc cref="M:StorageProviders.FileSystem.FileSystemStorageProviderExtensions.&lt;G&gt;$7B30185E57B8298C6754F16C0BCF4773.AddFileSystemStorage(System.Action{System.IServiceProvider,StorageProviders.FileSystem.FileSystemStorageSettings})"/>
+        </member>
+        <member name="M:StorageProviders.FileSystem.FileSystemStorageProviderExtensions.&lt;G&gt;$7B30185E57B8298C6754F16C0BCF4773.AddFileSystemStorage(System.Action{StorageProviders.FileSystem.FileSystemStorageSettings})">
+            <summary>
+            Registers <see cref="T:StorageProviders.IStorageProvider" /> as a singleton backed by the local file system using settings configured at startup.
+            </summary>
+            <param name="optionsAction">The configuration delegate used to populate the shared <see cref="T:StorageProviders.FileSystem.FileSystemStorageSettings" /> instance.</param>
+            <returns>The same <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" /> instance so registrations can be chained fluently.</returns>
+        </member>
+        <member name="M:StorageProviders.FileSystem.FileSystemStorageProviderExtensions.&lt;G&gt;$7B30185E57B8298C6754F16C0BCF4773.AddFileSystemStorage(System.Action{System.IServiceProvider,StorageProviders.FileSystem.FileSystemStorageSettings})">
+            <summary>
+            Registers <see cref="T:StorageProviders.IStorageProvider" /> as a scoped file-system provider using settings built from the current <see cref="T:System.IServiceProvider" />.
+            </summary>
+            <param name="optionsAction">The configuration delegate used to populate <see cref="T:StorageProviders.FileSystem.FileSystemStorageSettings" /> with access to services from the current scope.</param>
+            <returns>The same <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" /> instance so registrations can be chained fluently.</returns>
+        </member>
+        <member name="T:StorageProviders.FileSystem.FileSystemStorageSettings">
+            <summary>
+            Contains the local file-system settings required by <see cref="T:StorageProviders.FileSystem.FileSystemStorageProvider" />.
+            </summary>
+            <remarks>
+            The configured directory is the security boundary for all logical storage paths handled by the provider.
+            </remarks>
+        </member>
+        <member name="P:StorageProviders.FileSystem.FileSystemStorageSettings.RootDirectory">
+            <summary>
+            Gets or sets the absolute or application-relative directory under which files are stored.
+            </summary>
+            <remarks>
+            The provider creates this directory when it does not exist and rejects paths that resolve outside it.
+            </remarks>
+        </member>
+    </members>
+</doc>

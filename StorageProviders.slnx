@@ -1,6 +1,7 @@
 <Solution>
   <Folder Name="/samples/">
     <Project Path="samples/AzureStorageSample/AzureStorageSample.csproj" />
+    <Project Path="samples/FileSystemSample/FileSystemSample.csproj" />
   </Folder>
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
@@ -10,5 +11,6 @@
   <Folder Name="/src/">
     <Project Path="src/StorageProviders.Abstractions/StorageProviders.Abstractions.csproj" />
     <Project Path="src/StorageProviders.AzureStorage/StorageProviders.AzureStorage.csproj" />
+    <Project Path="src/StorageProviders.FileSystem/StorageProviders.FileSystem.csproj" />
   </Folder>
 </Solution>

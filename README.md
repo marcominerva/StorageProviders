@@ -49,6 +49,21 @@ The interface contains convenience overloads and stream-based methods:
 
 Because the API is fully asynchronous, it works well in ASP.NET Core, background services, and other I/O-bound workloads.
 
+## File System
+
+The `StorageProviders.FileSystem` implementation stores files under a configured local directory:
+
+```csharp
+builder.Services.AddFileSystemStorage(options =>
+{
+    options.RootDirectory = Path.Combine(builder.Environment.ContentRootPath, "attachments");
+});
+```
+
+Logical paths are always relative to `RootDirectory`. The provider creates missing directories, rejects paths outside the configured root, persists metadata in an internal `.storageproviders` directory, and returns a local `file` URI from `GetFullPathAsync`. Temporary delegated read URIs are not supported, so `GetReadAccessUriAsync` returns `null`.
+
+The `samples/FileSystemSample` project demonstrates uploads, downloads, enumeration, metadata, file information, deletion, and full-path resolution through ASP.NET Core Minimal APIs.
+
 ## Registering Azure Storage
 
 The Azure implementation is provided by `StorageProviders.AzureStorage` and can be registered in two ways.
