@@ -32,7 +32,7 @@ app.UseStatusCodePages();
 
 app.MapOpenApi();
 
-app.UseSwaggerUI(options =>
+app.MapSwaggerUI(setupAction: options =>
 {
     options.SwaggerEndpoint("/openapi/v1.json", app.Environment.ApplicationName);
     options.RoutePrefix = string.Empty;

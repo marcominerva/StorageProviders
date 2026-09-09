@@ -1,0 +1,39 @@
+@baseUrl = http://localhost:5100
+@fileName = example.txt
+
+### List files
+GET {{baseUrl}}/api/attachments
+
+### Check whether a file exists
+GET {{baseUrl}}/api/attachments/exists?fileName={{fileName}}
+
+### Upload a file
+POST {{baseUrl}}/api/attachments?overwrite=true
+Content-Type: multipart/form-data; boundary=StorageBoundary
+
+--StorageBoundary
+Content-Disposition: form-data; name="file"; filename="example.txt"
+Content-Type: text/plain
+
+Hello from FileSystemSample.
+--StorageBoundary--
+
+### Get file information
+GET {{baseUrl}}/api/attachments/info?fileName={{fileName}}
+
+### Get the local file URI
+GET {{baseUrl}}/api/attachments/full-path?fileName={{fileName}}
+
+### Download a file
+GET {{baseUrl}}/api/attachments/content?fileName={{fileName}}
+
+### Update metadata
+PUT {{baseUrl}}/api/attachments/metadata?fileName={{fileName}}
+Content-Type: application/json
+
+{
+  "category": "sample"
+}
+
+### Delete a file
+DELETE {{baseUrl}}/api/attachments?fileName={{fileName}}
