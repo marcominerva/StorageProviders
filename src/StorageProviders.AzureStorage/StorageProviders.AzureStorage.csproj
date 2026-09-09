@@ -5,6 +5,7 @@
         <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
+        <LangVersion>latest</LangVersion>
         <DocumentationFile>StorageProviders.AzureStorage.xml</DocumentationFile>
         <Authors>Marco Minerva</Authors>
         <Company>Marco Minerva</Company>
@@ -31,17 +32,17 @@
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
-        <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.17" />
+        <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.20" />
         <PackageReference Include="Azure.Storage.Blobs" Version="12.27.0" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
-        <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="10.0.9" />
-        <PackageReference Include="Azure.Storage.Blobs" Version="12.29.0" />
+        <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="10.0.12" />
+        <PackageReference Include="Azure.Storage.Blobs" Version="12.29.2" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="StorageProviders.Abstractions" Version="1.0.36" />
+        <PackageReference Include="StorageProviders.Abstractions" Version="1.0.39" />
     </ItemGroup>
 
     <ItemGroup>
