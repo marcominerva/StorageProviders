@@ -91,8 +91,7 @@ attachementsApiGroup.MapPost(string.Empty, async (IFormFile file, IStorageProvid
 attachementsApiGroup.MapPost("upload-metadata", async (IStorageProvider storageProvider, [FromForm] UploadFileWithMetadataRequest request, CancellationToken cancellationToken) =>
 {
     using var stream = request.File.OpenReadStream();
-    var metadata = string.IsNullOrWhiteSpace(request.JsonMetadata) ? null
-                    : JsonSerializer.Deserialize<Dictionary<string, string>>(request.JsonMetadata, JsonSerializerOptions.Web);
+    var metadata = string.IsNullOrWhiteSpace(request.JsonMetadata) ? null : JsonSerializer.Deserialize<Dictionary<string, string?>>(request.JsonMetadata, JsonSerializerOptions.Web);
 
     await storageProvider.SaveAsync(Path.Combine(request.Folder ?? string.Empty, request.File.FileName), stream, metadata, request.Overwrite, cancellationToken);
 
@@ -100,7 +99,7 @@ attachementsApiGroup.MapPost("upload-metadata", async (IStorageProvider storageP
 })
 .DisableAntiforgery();
 
-attachementsApiGroup.MapPut("metadata", async (IStorageProvider storageProvider, string fileName, IDictionary<string, string>? metadata = null, string? folder = null) =>
+attachementsApiGroup.MapPut("metadata", async (IStorageProvider storageProvider, string fileName, IDictionary<string, string?>? metadata = null, string? folder = null) =>
 {
     await storageProvider.SetMetadataAsync(Path.Combine(folder ?? string.Empty, fileName), metadata);
 

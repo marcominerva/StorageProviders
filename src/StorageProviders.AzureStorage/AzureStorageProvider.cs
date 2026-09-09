@@ -11,7 +11,7 @@ internal class AzureStorageProvider(AzureStorageSettings settings) : IStoragePro
 {
     private readonly BlobServiceClient blobServiceClient = new(settings.ConnectionString);
 
-    public async Task SaveAsync(string path, Stream stream, IDictionary<string, string>? metadata, bool overwrite, CancellationToken cancellationToken = default)
+    public async Task SaveAsync(string path, Stream stream, IDictionary<string, string?>? metadata, bool overwrite, CancellationToken cancellationToken = default)
     {
         var blobClient = await GetBlobClientAsync(path, true, cancellationToken).ConfigureAwait(false);
 
@@ -134,7 +134,7 @@ internal class AzureStorageProvider(AzureStorageSettings settings) : IStoragePro
         await blobContainerClient.DeleteBlobIfExistsAsync(blobName, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task SetMetadataAsync(string path, IDictionary<string, string>? metadata = null, CancellationToken cancellationToken = default)
+    public async Task SetMetadataAsync(string path, IDictionary<string, string?>? metadata = null, CancellationToken cancellationToken = default)
     {
         var blobClient = await GetBlobClientAsync(path, cancellationToken: cancellationToken).ConfigureAwait(false);
 
