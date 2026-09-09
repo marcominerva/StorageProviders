@@ -7,19 +7,6 @@
 
 A collection of Storage Providers for various destinations.
 
-## Azure Storage
-
-[![NuGet](https://img.shields.io/nuget/v/StorageProviders.AzureStorage.svg?style=flat-square)](https://www.nuget.org/packages/StorageProviders.AzureStorage)
-[![Nuget](https://img.shields.io/nuget/dt/StorageProviders.AzureStorage)](https://www.nuget.org/packages/StorageProviders.AzureStorage)
-
-**Installation**
-
-The library is available on [NuGet](https://www.nuget.org/packages/StorageProviders.AzureStorage). Search for *StorageProviders.AzureStorage* in the **Package Manager GUI** or run the following command in the **.NET CLI**:
-
-```bash
-dotnet add package StorageProviders.AzureStorage
-```
-
 ## How the library works
 
 The package exposes the `IStorageProvider` abstraction, which offers a single asynchronous API for common file storage operations:
@@ -49,9 +36,24 @@ The interface contains convenience overloads and stream-based methods:
 
 Because the API is fully asynchronous, it works well in ASP.NET Core, background services, and other I/O-bound workloads.
 
-## File System
+## File System Storage
 
-The `StorageProviders.FileSystem` implementation stores files under a configured local directory:
+[![NuGet](https://img.shields.io/nuget/v/StorageProviders.FileSystem.svg?style=flat-square)](https://www.nuget.org/packages/StorageProviders.FileSystem)
+[![Nuget](https://img.shields.io/nuget/dt/StorageProviders.FileSystem)](https://www.nuget.org/packages/StorageProviders.FileSystem)
+
+The `StorageProviders.FileSystem` implementation stores files and their metadata under a configured local directory. It targets .NET 8, .NET 9, and .NET 10.
+
+### Installation
+
+The library is available on [NuGet](https://www.nuget.org/packages/StorageProviders.FileSystem). Search for *StorageProviders.FileSystem* in the **Package Manager GUI** or run the following command in the **.NET CLI**:
+
+```bash
+dotnet add package StorageProviders.FileSystem
+```
+
+### Registering File System Storage
+
+The provider can be registered using settings known at startup:
 
 ```csharp
 builder.Services.AddFileSystemStorage(options =>
@@ -60,15 +62,106 @@ builder.Services.AddFileSystemStorage(options =>
 });
 ```
 
-Logical paths are always relative to `RootDirectory`. The provider creates missing directories, rejects paths outside the configured root, persists metadata in an internal `.storageproviders` directory, and returns a local `file` URI from `GetFullPathAsync`. Temporary delegated read URIs are not supported, so `GetReadAccessUriAsync` returns `null`.
+This registration adds:
 
-The `samples/FileSystemSample` project demonstrates uploads, downloads, enumeration, metadata, file information, deletion, and full-path resolution through ASP.NET Core Minimal APIs.
+- `FileSystemStorageSettings` as a singleton
+- `IStorageProvider` mapped to the file-system provider as a singleton
 
-## Registering Azure Storage
+Settings can also be resolved from the current service provider:
+
+```csharp
+builder.Services.AddFileSystemStorage((serviceProvider, options) =>
+{
+    var environment = serviceProvider.GetRequiredService<IHostEnvironment>();
+    var configuration = serviceProvider.GetRequiredService<IConfiguration>();
+    var configuredPath = configuration.GetValue<string>("AppSettings:RootDirectory")!;
+
+    options.RootDirectory = Path.GetFullPath(configuredPath, environment.ContentRootPath);
+});
+```
+
+This overload registers both `FileSystemStorageSettings` and `IStorageProvider` as scoped services.
+
+### File System provider behavior
+
+`RootDirectory` defines the storage root and security boundary. It can be absolute or relative to the application's working directory. The provider creates it when it does not exist.
+
+All paths passed to `IStorageProvider` must be logical paths relative to that root:
+
+```text
+documents/report.pdf
+images/logo.png
+```
+
+The provider:
+
+- normalizes Windows and Unix directory separators
+- creates missing directories when saving files
+- rejects absolute paths and paths that resolve outside `RootDirectory`
+- rejects symbolic links and other reparse points in a target path
+- reserves the `.storageproviders` directory for internal data
+- prevents overwriting an existing file unless `overwrite` is `true`
+- filters enumeration by an optional path prefix and file extensions
+
+Metadata is persisted as JSON sidecar data under `<RootDirectory>/.storageproviders/metadata`. Passing `null` or an empty dictionary to `SetMetadataAsync` removes the metadata associated with the file. Metadata files are also removed when their corresponding stored files are deleted.
+
+`GetFullPathAsync` returns an absolute local `file` URI. Local file systems do not support delegated access, so `GetReadAccessUriAsync` validates the logical path and returns `null`.
+
+### File System usage
+
+After registration, inject `IStorageProvider` and use the shared storage API:
+
+```csharp
+var metadata = new Dictionary<string, string?>
+{
+    ["category"] = "invoice",
+    ["customerId"] = "42"
+};
+
+await using var stream = File.OpenRead("report.pdf");
+await storageProvider.SaveAsync("documents/report.pdf", stream, metadata, overwrite: false);
+```
+
+Files can then be read, inspected, enumerated, updated, and deleted:
+
+```csharp
+await using var content = await storageProvider.ReadAsStreamAsync("documents/report.pdf");
+var fileInfo = await storageProvider.GetPropertiesAsync("documents/report.pdf");
+var fileUri = await storageProvider.GetFullPathAsync("documents/report.pdf");
+
+await foreach (var path in storageProvider.EnumerateAsync("documents", [".pdf"]))
+{
+    Console.WriteLine(path);
+}
+
+await storageProvider.SetMetadataAsync("documents/report.pdf", new Dictionary<string, string?>
+{
+    ["category"] = "archived"
+});
+
+await storageProvider.DeleteAsync("documents/report.pdf");
+```
+
+The `samples/FileSystemSample` project demonstrates upload, download, enumeration, existence checks, metadata management, file information, deletion, and full-path resolution through ASP.NET Core Minimal APIs.
+
+## Azure Storage
+
+[![NuGet](https://img.shields.io/nuget/v/StorageProviders.AzureStorage.svg?style=flat-square)](https://www.nuget.org/packages/StorageProviders.AzureStorage)
+[![Nuget](https://img.shields.io/nuget/dt/StorageProviders.AzureStorage)](https://www.nuget.org/packages/StorageProviders.AzureStorage)
+
+### Installation
+
+The library is available on [NuGet](https://www.nuget.org/packages/StorageProviders.AzureStorage). Search for *StorageProviders.AzureStorage* in the **Package Manager GUI** or run the following command in the **.NET CLI**:
+
+```bash
+dotnet add package StorageProviders.AzureStorage
+```
+
+### Registering Azure Storage
 
 The Azure implementation is provided by `StorageProviders.AzureStorage` and can be registered in two ways.
 
-### Static configuration
+#### Static configuration
 
 Use this overload when the Azure settings are known at startup:
 
@@ -85,7 +178,7 @@ This registration adds:
 - `AzureStorageSettings` as a singleton
 - `IStorageProvider` mapped to `AzureStorageProvider` as a singleton
 
-### Configuration resolved from the service provider
+#### Configuration resolved from the service provider
 
 Use this overload when the storage settings depend on other registered services:
 
@@ -107,7 +200,7 @@ This registration adds:
 - `AzureStorageSettings` as scoped
 - `IStorageProvider` mapped to `AzureStorageProvider` as scoped
 
-## Azure provider behavior
+### Azure provider behavior
 
 `AzureStorageProvider` uses Azure Blob Storage and requires:
 
@@ -130,9 +223,9 @@ images/logo.png        -> container: images, blob: logo.png
 
 Backslashes are normalized to forward slashes, so Windows-style paths are also accepted.
 
-## Main operations
+### Main operations
 
-### Upload a file
+#### Upload a file
 
 ```csharp
 using var stream = file.OpenReadStream();
@@ -154,7 +247,7 @@ await storageProvider.SaveAsync(file.FileName, stream, metadata, overwrite: true
 
 When `overwrite` is `false`, the Azure provider throws an `IOException` if the blob already exists.
 
-### Read a file
+#### Read a file
 
 ```csharp
 await using var stream = await storageProvider.ReadAsStreamAsync("documents/report.pdf");
@@ -166,13 +259,13 @@ Or read it as a byte array:
 var content = await storageProvider.ReadAsByteArrayAsync("documents/report.pdf");
 ```
 
-### Check whether a file exists
+#### Check whether a file exists
 
 ```csharp
 var exists = await storageProvider.ExistsAsync("documents/report.pdf");
 ```
 
-### Enumerate files
+#### Enumerate files
 
 ```csharp
 await foreach (var path in storageProvider.EnumerateAsync("documents", [".pdf", ".docx"]))
@@ -187,7 +280,7 @@ This method supports:
 - filtering by extension
 - asynchronous streaming of results
 
-### Get file information
+#### Get file information
 
 ```csharp
 var fileInfo = await storageProvider.GetPropertiesAsync("documents/report.pdf");
@@ -202,7 +295,7 @@ The returned `StorageFileInfo` contains:
 - last modification date
 - metadata
 
-### Update metadata
+#### Update metadata
 
 ```csharp
 await storageProvider.SetMetadataAsync("documents/report.pdf", new Dictionary<string, string>
@@ -213,13 +306,13 @@ await storageProvider.SetMetadataAsync("documents/report.pdf", new Dictionary<st
 
 Passing `null` clears the existing metadata for the file.
 
-### Get the full blob URI
+#### Get the full blob URI
 
 ```csharp
 var uri = await storageProvider.GetFullPathAsync("documents/report.pdf");
 ```
 
-### Generate a temporary read URI
+#### Generate a temporary read URI
 
 ```csharp
 var uri = await storageProvider.GetReadAccessUriAsync(
@@ -230,13 +323,13 @@ var uri = await storageProvider.GetReadAccessUriAsync(
 
 For Azure Blob Storage this produces a SAS URI with read permissions. If a file name is provided, the provider also sets the `Content-Disposition` header so the browser can suggest a download name.
 
-### Delete a file
+#### Delete a file
 
 ```csharp
 await storageProvider.DeleteAsync("documents/report.pdf");
 ```
 
-## Example with ASP.NET Core Minimal APIs
+### Example with ASP.NET Core Minimal APIs
 
 The sample project in `samples/AzureStorageSample` shows how to inject `IStorageProvider` in endpoints and use it for:
 
@@ -271,7 +364,7 @@ app.MapGet("/api/attachments/full-path", async (IStorageProvider storageProvider
 });
 ```
 
-## Notes
+### Notes
 
 - The Azure provider automatically creates the target container when saving a file, if it does not exist.
 - Uploaded blobs use a content type inferred from the file name.
